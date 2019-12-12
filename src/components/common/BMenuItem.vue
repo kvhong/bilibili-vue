@@ -1,7 +1,10 @@
 <template>
 	<li class="m-i" :class="classes">
-		<a class="i-link" href="">
-			<em>{{item.title}}</em>
+		<!-- :href="item.id == 'home' ? '/' : item.id "
+		@click="to(item.id)" -->
+		<a class="i-link" @click="to(item.id, item.partition_name)">
+			<div hidden>{{item.id}}</div>
+			<em>{{item.partition_name}}</em>
 			<div class="v-num" v-if="showNum">
 				<span class="addnew_1">{{item.num}}</span>
 			</div>
@@ -33,6 +36,19 @@ export default {
 				return false
 			}
 			return true
+		}
+	},
+	methods: {
+		to(id,name) {
+			const path = id === 'home' ? '/' : '/par/'+name+'/'+id
+			const param = id === 'home' ? '' : id
+			this.$router.push({
+				path: path,
+				params: {
+					id: param,
+					name: name
+				}
+			})
 		}
 	}
 }

@@ -2,28 +2,28 @@
 	<div class="b-head">
 		<span class="b-head-i" :class="category"></span>
 		<span class="b-head-t">
-			<a href="" :title="title">
-				<h2>{{title}}</h2>
+			<a :href="'/'+categoryId" :title="category">
+				<h2>{{category}}</h2>
 			</a>
 		</span>
-		<ul class="b-slt-tab">
+		<!-- <ul class="b-slt-tab">
 			<li class="on" data-source="/index/ding.json" data-type-jsonp="json" push="">
 				<span class="b-tab-text">有新动态</span>
 			</li>
 			<li data-source="/index/ranking.json" data-type-jsonp="json" class="">
 				<span class="b-tab-text">最新投稿</span>
 			</li>
-		</ul>
+		</ul> -->
 		<div class="b-link-more">
 			<a href="/video/music.html">
 				更多<i class="b-icon b-icon-arrow-r"></i>
 			</a>
 		</div>
-		<div class="read-push" style="display: block;">
+		<div class="read-push" style="display: block;" @click="refresh">
 			<span class="icon-refresh"></span>
 			<span class="info">
-				<b>4865</b>
-				<em>条新动态</em>
+				<!-- <b>4865</b> -->
+				<em>刷新</em>
 			</span>
 		</div>
 		<div class="pmt-list pmt-inline">
@@ -42,61 +42,16 @@ export default {
 	props: {
 		category: {
 			type: String
+		},
+		categoryId: {
+			type: String
 		}
 	},
-
-	// douga 动画,bangumi 番剧, music 音乐,dance 舞蹈,game 游戏,technology  科技,life 生活,kichiku 鬼畜,fashion 时尚,ad 广告,ent  娱乐, movie 电影, teleplay TV剧
-	computed: {
-		title() {
-			let title = '未知标题';
-			if (this.category) {
-				switch(this.category) {
-					case 'douga':
-						title = '动画'	
-						break
-					case 'bangumi':
-						title = '番剧'	
-						break
-					case 'music':
-						title = '音乐'	
-						break
-					case 'dance':
-						title = '舞蹈'	
-						break
-					case 'game':
-						title = '游戏'	
-						break
-					case 'technology':
-						title = '科技'	
-						break
-					case 'life':
-						title = '生活'	
-						break
-					case 'kichiku':
-						title = '鬼畜'	
-						break
-					case 'fashion':
-						title = '时尚'	
-						break
-					case 'ad':
-						title = '广告'	
-						break
-					case 'ent':
-						title = '娱乐'	
-						break
-					case 'movie':
-						title = '电影'	
-						break
-					case 'teleplay':
-						title = 'TV剧'	
-						break
-					default:
-						title ="未知标题"
-				}
-			}
-			return title
+	methods: {
+		refresh() {
+			this.$store.dispatch('getRowsByPartition', { partitionId: this.categoryId })
 		}
-	},
+	}
 }
 </script>
 
@@ -113,23 +68,23 @@ export default {
 			width 40px
 			height 39px
 			display inline-block
-			&.douga
+			&.电影
 				background-position -141px -908px
-			&.bangumi
+			&.综艺
 				background-position -141px -140px
-			&.music
+			&.娱乐
 				background-position -141px -266px
-			&.dance
+			&.音乐
 				background-position -141px -461px
-			&.game
+			&.英雄联盟
 				background-position -141px -203px
-			&.technology
+			&.绝地求生
 				background-position -141px -525px
-			&.life
+			&.一起看
 				background-position -141px -970px
-			&.kichiku
+			&.DOTA2
 				background-position -141px -332px
-			&.fashion
+			&.动漫
 				background-position -141px -718px
 			&.ad
 				background-position -141px -1228px

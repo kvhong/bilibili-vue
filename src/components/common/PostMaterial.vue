@@ -1,7 +1,7 @@
 <template>
 	<ul class="s-menu">
 		<li>
-			<a href="http://member.bilibili.com/v/video/submit.html" target="_blank">
+			<a href="/upload" target="_blank">
 				<i class="b-icon b-icon-vp"></i>
 				<em>视频投稿</em>
 			</a>
@@ -70,7 +70,7 @@ export default {
 					&.b-icon-vm
 						background-position -471px -982px
 					&.b-icon-vc
-						background-position -471px -1753px
+						background-position -471px -1749px
 
 
 

@@ -24,18 +24,18 @@
 				</div>
 				<!-- 视频时间 -->
 				<div class="x">
-					<b class="x2">{{item.duration}}</b>
+					<b class="x2">{{item.created_date}}</b>
 				</div>
 			</a>
 					<!-- 下部分 -->
-			<a :href="hreflink" :title="item.title" target="_blank">
-				<div class="t">{{item.title}}</div>
+			<a :href="hreflink" :title="item.video_title" target="_blank">
+				<div class="t">{{item.video_title}}</div>
 				<div class="i">
 					<span>
-						<i class="b-icon b-icon-v-play"></i>{{item.stat.view}}
+						<i class="b-icon b-icon-v-play"></i>{{item.watches}}
 						</span><span>
-						<i class="b-icon b-icon-v-dm"></i>
-						{{item.stat.reply}}
+						<i class="b-icon b-icon-v-dianzan"></i>
+						{{item.comments}}
 					</span>
 				</div>
 			</a>
@@ -52,7 +52,7 @@ export default {
 	},
 	computed: {
 		hreflink() {
-			return 'http://www.bilibili.com/video/av' + this.item.aid
+			return '/video/' + this.item.id
 		}
 	}
 }
@@ -198,8 +198,8 @@ export default {
 						margin-right 5px
 						&.b-icon-v-play
 							background-position -282px -90px
-						&.b-icon-v-dm
-							background-position -282px -218px
+						&.b-icon-v-dianzan
+							background-position -473px -665px
 			&:hover 
 				.t
 					height 40px
@@ -207,6 +207,4 @@ export default {
 				.x
 					opacity 1
 					visibility visible
-
-
 </style>

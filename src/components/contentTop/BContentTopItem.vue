@@ -1,16 +1,16 @@
 <template>
 	<li class="top-item">
 		<div class="v-item">
-			<a href="/video/av8815046/" target="_blank" :title="contentTop.title">
+			<a :href="'/video/'+contentTop.item" target="_blank" :title="contentTop.video_title">
 				<div class="preview">
-					<img :src="contentTop.pic" :alt="contentTop.title">
+					<img :src="contentTop.pic" :alt="contentTop.video_title">
 				</div>
 				<div class="mask">
 				</div>
 				<div class="info">
-					<div class="t">{{contentTop.title}}</div>
+					<div class="t">{{contentTop.video_title}}</div>
 					<p class="up">up主：{{contentTop.author}}</p>
-					<p class="play">播放：{{contentTop.play}}</p>
+					<p class="play">播放：{{contentTop.watches}}</p>
 				</div>
 			</a>
 		</div>

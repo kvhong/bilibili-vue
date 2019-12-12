@@ -19,8 +19,8 @@
 			<BLive></BLive>
 		</div>
 		<!-- 各分类具体内容 -->
-		<div class="container-row"  v-for="(row, index) in rows" :id="row.b_id" v-if='rows'> 
-			<BContentRow :category="row.category" :categoryId="row.categoryId" :row="row.item"></BContentRow>
+		<div class="container-row"  v-for="row in rows" :key="row.id" :id="row.id"> 
+			<BContentRow :category="row.partition_name" :categoryId="row.id" :row="row.item"></BContentRow>
 		</div>
 	</div>
 </template>
@@ -32,6 +32,7 @@ import BPromote from 'components/promote/BPromote'
 import BLive from 'components/live/BLive'
 import BContentRow from 'components/contentRow/BContentRow'
 
+import axios from 'axios'
 import { mapGetters } from 'vuex'
 export default {
 	props: {

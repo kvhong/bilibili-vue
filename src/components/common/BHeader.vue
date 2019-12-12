@@ -1,10 +1,10 @@
 <template>
   <div class="header" style="background-image: url('//i0.hdslb.com/bfs/archive/4f59bf959d51592016e07efe62969c411288826a.png');">
   	<div class="header-layer"></div>
-  	<a class="header-link" target="_blank" href="http://www.bilibili.com" data-loc-id="142"></a>
-  	<div class="h-center">
+  	<a class="header-link" target="_blank" href="/" data-loc-id="142" @mouseenter="isShow = !isShow" @mouseout="isShow = !isShow"></a>
+  	<div class="h-center" @mouseenter="isShow = !isShow" @mouseout="isShow = !isShow">
   		<a href="/" class="logo" style="background-image: url('//i0.hdslb.com/bfs/archive/bb2aa0d954bf59d4ee555a8a603fe83888463b6b.png');"></a>
-  		<div class="banner-title">哔哩哔哩 (゜-゜)つロ 干杯~</div>
+  		<div class="banner-title" v-show="isShow">哔哩哔哩 (゜-゜)つロ 干杯~</div>
       <search class="msearch"></search>
   	</div>
     <BMenu></BMenu>
@@ -15,10 +15,15 @@
 import Search from 'components/common/Search'
 import BMenu from 'components/common/BMenu'
 export default {
-  components: {
-    Search,
-    BMenu
-  }
+	data() {
+		return {
+			isShow: false
+		}
+	},
+	components: {
+		Search,
+		BMenu
+	}
 }
 </script>
 

@@ -2,13 +2,33 @@
 	<div class="b-body">
 		<div class="r-list-body">
 			<div class="r-list-wrapper" ref="listWrapper">
-				<ul class="rlist" v-if="rank.hot">
-					<li :class="{on: index === 0}" v-for="(item, index) in rank.hot.list">
+				<ul class="rlist" v-if="rank">
+					<li :class="{on: index === 0}" v-for="(item, index) in rank" :key="item.id">
 						<i class="number" :class="{n: index === 0 || index === 1 || index === 2}">
 							{{index + 1}}
 						</i>
 						<div class="preview">
 						<!-- :alt="item.title" -->
+							<a :href="'/video/'+item.id" :title="item.video_title" target="_blank">
+								<img data-img="" :src="item.pic" loaded="loaded"  style="opacity: 1;">
+								</a>
+						</div>
+						<a class="rl-info" :href="'/video/'+item.id" :title="item.video_title + item.pts" target="_blank">	
+							<div class="title t">{{item.video_title}}
+							</div>
+							<div class="i">
+								<b class="pts" :title="item.pts">综合评分：{{item.pts}}
+								</b>
+							</div>
+						</a>
+					</li>
+				</ul>
+				<!-- <ul class="rlist" v-if="rank.hot_original">
+					<li :class="{on: index === 0}" v-for="(item, index) in rank.hot.list" :key="item.id">
+						<i class="number" :class="{n: index === 0 || index === 1 || index === 2}">
+							{{index + 1}}
+						</i>
+						<div class="preview">
 							<a href="/video/av9211860/" :title="item.title" target="_blank">
 								<img data-img="" :src="item.pic" loaded="loaded"  style="opacity: 1;">
 								</a>
@@ -22,32 +42,11 @@
 							</div>
 						</a>
 					</li>
-				</ul>
-				<ul class="rlist" v-if="rank.hot_original">
-					<li :class="{on: index === 0}" v-for="(item, index) in rank.hot.list">
-						<i class="number" :class="{n: index === 0 || index === 1 || index === 2}">
-							{{index + 1}}
-						</i>
-						<div class="preview">
-						<!-- :alt="item.title" -->
-							<a href="/video/av9211860/" :title="item.title" target="_blank">
-								<img data-img="" :src="item.pic" loaded="loaded"  style="opacity: 1;">
-								</a>
-						</div>
-						<a class="rl-info" href="/video/av9211860/" :title="item.title + item.pts" target="_blank">	
-							<div class="title t">{{item.title}}
-							</div>
-							<div class="i">
-								<b class="pts" :title="item.pts">综合评分：{{item.pts}}
-								</b>
-							</div>
-						</a>
-					</li>
-				</ul>
+				</ul> -->
 			</div>
 		</div>
 		<div class="more-link">
-			<a href="/ranking#!/all/1/1/7/" target="_blank">查看更多</a>
+			<a href="/ranking#!/all/1/1/7/" target="_blank">更多</a>
 		</div>
 	</div>
 </template>
@@ -57,66 +56,41 @@ import { contentrankApi } from 'api'
 export default {
 	data(){
 		return {
-			threeDayData: {},
-			weekData: {},
-			rank: {}
+			data: {},
+			rank: {},
+			id: ''
 		}
 	},
 	props: {
 		categoryId: {
-			type: Number
-		},
-		isOrigin: {
-			type: Boolean
-		},
-		isWeek: {
-			type: Boolean
+			type: String
 		}
 	},
 	watch: {
-		isOrigin(val, oldVal) {
-			console.log(this.isWeek)
-			if (val) {
-				console.log('isOrigin')
-				this.$refs.listWrapper.style.marginLeft = '-100%'
-			} else {
-				this.$refs.listWrapper.style.marginLeft = '0%'
-			}
-		},
-		isWeek(val, oldVal) {
-			console.log("change")
-			this.getrankData()
-		}
+		'$route': 'getRankData'
 	},
 	mounted() {
-		this.getrankData()
-	},				
+		this.getRankData()
+	},
 	methods: {
-		getrankData() {
+		getRankData() {
 			//防止重复请求
-			if (this.isWeek && JSON.stringify(this.weekData) !== '{}') {
-				this.rank = this.weekData
+			this.data = {}
+			if (this.$route.params.id != undefined) {
+				this.id = this.$route.params.id
+			}
+			if (JSON.stringify(this.data) !== '{}') {
+				this.rank = this.data
 				return
 			} 
-			if (!this.isWeek && JSON.stringify(this.threeDayData) !== '{}') {
-				this.rank = this.threeDayData
-				return
-			} 
-
 			let param = {
-				categoryId: this.categoryId
+				top: '10',
+				partitionId: this.id === '' ? this.categoryId : this.id
 			}
-			if (this.isWeek) {
-				contentrankApi.contentrankweek(param).then((response) => {
-					this.weekData = response
-					this.rank = this.weekData
-				})
-			} else {
-				contentrankApi.contentrank(param).then((response) => {
-					this.threeDayData = response
-					this.rank = this.threeDayData
-				})
-			}
+			contentrankApi.contentrank(param).then((response) => {
+				this.data = response
+				this.rank = this.data
+			})
 		}
 	}
 }

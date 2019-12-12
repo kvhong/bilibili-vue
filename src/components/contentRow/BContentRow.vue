@@ -1,7 +1,7 @@
 <template>
 	<div class="b-section-body">
 		<div class="b-l">
-			<BRowHead :category="category"></BRowHead>
+			<BRowHead :category="category" :categoryId="categoryId"></BRowHead>
 			<BRowBody :row="row"></BRowBody>
 		</div>
 		<div class="b-r">
@@ -24,7 +24,7 @@ export default {
 			type: Array
 		},
 		categoryId: {
-			type: Number
+			type: String
 		}
 	},
 	computed: {
@@ -36,8 +36,7 @@ export default {
 		])
 	},
 	mounted() {
-		// console.log(this.categoryId)
-		// this.$store.dispatch('getContentRank', this.categoryId)
+		this.$store.dispatch('getContentRank', { top: '10', partitionId: this.categoryId })
 	},
 	components: {
 		BRowHead,

@@ -2,10 +2,10 @@
 	<div class="menu">
 		<div class="menu-wrapper">
 			<ul class="nav-menu">
-				<BMenuItem  v-for="i in classify" :item="i"></BMenuItem>
+				<BMenuItem  v-for="i in classify" v-bind:key="i.id" :item="i"></BMenuItem>
 			</ul>
 			<div class="menu-r">
-				<a href="" target="_blank" href="http://search.bilibili.com/all?keyword=%E8%B9%A6%E8%BF%AA" title="蹦迪" class="random-p">
+				<a target="_blank" href="http://search.bilibili.com/all?keyword=%E8%B9%A6%E8%BF%AA" title="蹦迪" class="random-p">
 					<div class="random-p-movie">
 						<img src="//i2.hdslb.com/bfs/active/84f323e3a77a6eafee656f832847603751f3857d.gif" alt="蹦迪">
 					</div>
@@ -26,76 +26,32 @@
 
 <script>
 import BMenuItem from 'components/common/BMenuItem'
+import axios from 'axios'
 export default {
 	data() {
 		return {
 			showMobileLink: false,
-			classify: [
-				{
-					title: '首页',
-					num: 0,
-					home: true
-				},
-				{
-					title: '动画',
-					num: 468
-				},
-				{
-					title: '番剧',
-					num: 61
-				},
-				{
-					title: '音乐',
-					num: 749
-				},
-				{
-					title: '舞蹈',
-					num: 108
-				},
-				{
-					title: '游戏',
-					num: 999
-				},
-				{
-					title: '科技',
-					num: 482
-				},
-				{
-					title: '生活',
-					num: 988
-				},
-				{
-					title: '鬼畜',
-					num: 64
-				},
-				{
-					title: '时尚',
-					num: 177
-				},
-				{
-					title: '广告',
-					num: 43
-				},
-				{
-					title: '娱乐',
-					num: 839
-				},
-				{
-					title: '影视',
-					num: 702
-				}, 
-				{
-					title: '广场',
-					num: 0,
-					sequare: true
-				},
-				{
-					title: '直播',
-					num: 0,
-					live: true
-				}
-			]
+			classify: []
 		}
+	},
+	methods: {
+		getPar(){
+			const home = { id: 'home', partition_name: '首页', home: true }
+			const sequare = { id: 'sequare', partition_name: '广场', sequare: true }
+			const live = { id: 'live', partition_name: '直播', live: true }
+			axios.get('http://localhost:8500/home/getPartition').then(res => {
+				const list = res.data
+				this.classify.push(home)
+				for (let index = 0; index < list.length; index++) {
+					this.classify.push(list[index])
+				}
+				this.classify.push(sequare)
+				this.classify.push(live)
+			})
+		}
+	},
+	created() {
+		this.getPar()
 	},
 	components: {
 		BMenuItem

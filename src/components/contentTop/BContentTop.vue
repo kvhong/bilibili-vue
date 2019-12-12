@@ -1,10 +1,10 @@
 <template>
 	<div class="top-list-wrapper">
 		<ul class="top-list" clearfix>
-			<BContentTopItem v-for="(item, index) in ranklist" :contentTop="item"></BContentTopItem>
+			<BContentTopItem v-for="item in ranklist" :key="item.id" :contentTop="item"></BContentTopItem>
 		</ul>
-		<div class="prev" @click="now = now > 0 ? now -= 1 : now = 2">{{ this.pre = this.now === 0 ? '昨日' : this.now === 1 ? '三日' : '一周'}}</div>
-    <div class="next" @click="now = now < 2 ? now += 1 : now = 0">{{ this.next = this.now === 0 ? '一周' : this.now === 1 ? '昨日' : '三日'}}</div>
+		<div class="prev" @click="preVideo">{{ this.pre = this.now === 3 ? '昨日' : this.now === 1 ? '一周' : '三日'}}</div>
+    <div class="next" @click="nextVideo">{{ this.next = this.now === 3 ? '一周' : this.now === 1 ? '三日' : '昨天'}}</div>
 	</div>
 </template>
 
@@ -14,23 +14,50 @@ import { mapGetters } from 'vuex'
 export default {
 	data() {
 		return {
-			now: 0, // 0三日  1 
+			now: 3, //1：昨天 3：三天内 7：一周
 			pre: '',
-			next: ''
+			next: '',
+			ranklist: []
 		}
 	},
 	computed: {
 		...mapGetters([
 			'requesting',
 			'error',
-			'ranklist'
+			'ranklist1',
+			'ranklist3',
+			'ranklist7'
 		])
 	},
 	mounted() {
 		this.$store.dispatch('ranklist')
 	},
+	watch: {
+		ranklist3() {
+			this.ranklist = this.ranklist3
+		}
+	},
 	components: {
 		BContentTopItem
+	},
+	methods: {
+		preVideo() {
+			this.now = this.now === 3 ? this.now = 1 : this.now === 1 ? this.now = 7 : this.now = 3
+			this.setRanklist()
+		},
+		nextVideo() {
+			this.now = this.now === 3 ? this.now = 7 : this.now === 1 ? this.now = 3 : this.now = 1
+			this.setRanklist()
+		},
+		setRanklist() {
+			if (this.now === 3) {
+				this.ranklist = this.ranklist3
+			} else if (this.now === 1) {
+				this.ranklist = this.ranklist1
+			} else {
+				this.ranklist = this.ranklist7
+			}
+		}
 	}
 }
 </script>

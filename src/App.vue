@@ -1,87 +1,67 @@
 <template>
-  <div id="app">
-    <TopContainer></TopContainer>
-    <BHeader></BHeader>
-    <BContent :rows="rows"></BContent>
-    <BNavSide :options="options" v-on:change="isShowMask"></BNavSide>
-    <div class="wnd-mask" ref="mask" v-show="showMask"></div>
+  <div>
+    <router-view v-if="isRouterAlive"></router-view>
+    <Foot></Foot>
   </div>
 </template>
 
 <script>
-import TopContainer from 'components/common/TopContainer.vue'
-import BHeader from 'components/common/BHeader.vue'
-import BContent from 'components/content/BContent.vue'
-import BNavSide from 'components/nav/BNavSide'
-
-import { mapGetters } from 'vuex'
+import Foot from 'components/common/Foot.vue'
 export default {
   name: 'app',
   components: {
-    TopContainer,
-    BHeader,
-    BContent,
-    BNavSide
+      Foot
+  },
+  provide() {
+    return {
+      reload: this.reload
+    }
   },
   mounted() {
     this.$store.dispatch('getContentRows')
+    this.timer1 = setInterval(this.updateRank, 24*60*60*1000)
+		this.timer3 = setInterval(this.updateRank3, 3*24*60*60*1000)
+    this.timer7 = setInterval(this.updateRank7, 7*24*60*60*1000)
+  },
+  beforeDestroy() {
+    clearInterval(this.timer1);
+    clearInterval(this.timer3);
+    clearInterval(this.timer7);
   },
   data() {
     return {
-      showMask: false
-    }
-  },
-  watch: {
-    options() {
-      console.log('options 变化了')
-    },
-    items() {
-      console.log('items 变化了')
-    }
-  },
-  computed: {
-    ...mapGetters([
-      'requesting',
-      'error',
-      'rows'
-    ]),
-    options() {
-      let options = {
-        offset: 100, //偏移的距离
-        items: this.rows,
-        offsetTop: 0 //距离顶部距离
-      }
-      return options
+      showMask: false,
+      timer1: '',
+      timer3: '',
+      timer7: '',
+      isRouterAlive: true
     }
   },
   methods: {
     isShowMask() {
       this.showMask = !this.showMask
+    },
+		updateRank() {
+			updateRankApi.updateRank('1').then((response) => {
+        console.log(response)
+      })
+		},
+		updateRank3() {
+      updateRankApi.updateRank('3').then((response) => {
+        console.log(response)
+      })
+		},
+		updateRank7() {
+      updateRankApi.updateRank('7').then((response) => {
+        console.log(response)
+      })
+    },
+    reload() {
+      this.isRouterAlive = false
+			this.$nextTick(function() {
+				this.isRouterAlive = true
+			})
     }
   }
 }
 </script>
-
-<style lang="stylus">
-  #app 
-    font-family "Microsoft YaHei",Arial,Helvetica,sans-serif
-    -webkit-font-smoothing antialiased
-    font-size 12px
-    margin 0
-    padding 0
-    background #fff
-    color #222
-    min-width 990px
-    tap-highlight-color transparent
-    -webkit-tap-highlight-color transparent
-    .wnd-mask
-      position fixed
-      width 100%
-      height 150%
-      background-color #000
-      opacity .5!important
-      z-index 1000
-      top 0px
-      left 0px
-      transition .2s
-</style>

@@ -3,18 +3,18 @@
 		<div class="b-head">
 			<div class="left">
 				<span class="b-head-t">
-					<h3>排行</h3>
+					<h3>排行榜</h3>
 				</span>
-				<ul class="b-slt-tab" v-show="categoryId !== 13">
+				<!-- <ul class="b-slt-tab" v-show="categoryId !== 13">
 					<li :class="{on: !isOrigin}" type="hot" @mouseover="hot">
 						<span class="b-tab-text">全部</span>
 					</li>
 					<li  :class="{on: isOrigin}" class="hot_original" @mouseover="original">
 						<span class="b-tab-text">原创</span>
 					</li>
-				</ul>
+				</ul> -->
 			</div>
-			<div class="right">
+			<!-- <div class="right">
 				<div class="b-slt">
 					<span class="txt">{{selectedTitle}}</span><div class="b-slt-arrow"></div>
 					<ul class="list">
@@ -22,9 +22,10 @@
 						<li :class="{selected: isSelected2}" data-value="7" data-source="/index/catalogy/1-week.json" @click="selectedItem2">一周</li>
 					</ul>
 				</div>
-			</div>
+			</div> -->
 		</div>
-		<BRowRankBody :categoryId="categoryId" :isOrigin="isOrigin" :isWeek="isWeek"></BRowRankBody>
+		<!-- <BRowRankBody :categoryId="categoryId" :isOrigin="isOrigin" :isWeek="isWeek"></BRowRankBody> -->
+		<BRowRankBody :categoryId="categoryId"></BRowRankBody>
 	</div>
 </template>
 
@@ -33,41 +34,44 @@ import BRowRankBody from 'components/contentRow/BRowRankBody'
 import axios from 'axios'
 export default {
 	props: {
+		category: {
+			type: String
+		},
 		categoryId: {
-			type: Number
+			type: String
 		}
 	},
 	data() {
 		return {
-			isSelected1: true,
-			isSelected2: false,
-			selectedTitle: '三日',
-			isOrigin: false, //全部还是原创
-			isWeek: false //三日排行or一周排行
+			// isSelected1: true,
+			// isSelected2: false,
+			// selectedTitle: '三日',
+			// isOrigin: false, //全部还是原创
+			// isWeek: false //三日排行or一周排行
 		}
 	},
 	components: {
 		BRowRankBody
 	},
 	methods: {
-		selectedItem1() {
-			this.selectedTitle = '三日'
-			this.isSelected1 = true
-			this.isSelected2 = false
-			this.isWeek = false
-		},
-		selectedItem2() {
-			this.selectedTitle = '一周'
-			this.isSelected1 = false
-			this.isSelected2 = true
-			this.isWeek = true
-		},
-		hot() {
-			this.isOrigin = false
-		},
-		original() {
-			this.isOrigin = true
-		}
+		// selectedItem1() {
+		// 	this.selectedTitle = '三日'
+		// 	this.isSelected1 = true
+		// 	this.isSelected2 = false
+		// 	this.isWeek = false
+		// },
+		// selectedItem2() {
+		// 	this.selectedTitle = '一周'
+		// 	this.isSelected1 = false
+		// 	this.isSelected2 = true
+		// 	this.isWeek = true
+		// },
+		// hot() {
+		// 	this.isOrigin = false
+		// },
+		// original() {
+		// 	this.isOrigin = true
+		// }
 	}
 }
 </script>

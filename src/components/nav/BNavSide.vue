@@ -8,13 +8,13 @@
 		</transition>
 		<div class="nav-list" ref="list">
 			<template v-for="(item, index) in data">
-				<div v-if="isDrag && index === replaceItem && replaceItem <= dragId" class="n-i sotrable">
+				<div v-if="isDrag && index === replaceItem && replaceItem <= dragId" class="n-i sotrable" :key="item.id">
 					<div class="name"></div>
 				</div>
-				<div class="n-i sotrable" :class="[{'on': current===index && !isSort}, {'drag': isDrag && current === index}]"  @click="setEnable(index)" @mousedown="dragStart($event, index)" :style="dragStyles">
+				<div class="n-i sotrable" :class="[{'on': current===index && !isSort}, {'drag': isDrag && current === index}]"  @click="setEnable(index)" @mousedown="dragStart($event, index)" :style="dragStyles" :key="item.id">
 					<div class="name">{{item.name}}</div>
 				</div>
-				<div v-if="isDrag && index === replaceItem && replaceItem > dragId" class="n-i sotrable">
+				<div v-if="isDrag && index === replaceItem && replaceItem > dragId" class="n-i sotrable" :key="item.id">
 					<div class="name"></div>
 				</div>
 			</template>
@@ -132,14 +132,14 @@ export default {
 		initData() {
 			//将this.options.items转化成新的数组this.data
 			this.data = Array.from(this.options.items, (item) => {
-				let element = document.getElementById(item.b_id)
+				let element = document.getElementById(item.id)
 				if (!element) {
-					console.error(`can not find element of name is ${item.b_id}`)
+					console.error(`can not find element of name is ${item.id}`)
 					return
 				}
 				let offsetTop = this.getOffsetTop(element)
 				return {
-					name: item.name,
+					name: item.partition_name,
 					element: element,
 					offsetTop: offsetTop,
 					height: element.offsetHeight
@@ -182,14 +182,15 @@ export default {
 		/** 滚动事件 */
 		scroll(e) {
 			this.scrollTop = window.pageYOffset || (document.documentElement.scrollTop + document.body.scrollTop)
-			if (this.scrollTop >= 300) {
-				this.$refs.navSide.style.top = "0px"
-				this.init()
-			} else {
-				this.$refs.navSide.style.top = "240px"
-				this.init()
+			if (this.$refs.navSide != undefined) {
+				if (this.scrollTop >= 300) {
+					this.$refs.navSide.style.top = "0px"
+					this.init()
+				} else {
+					this.$refs.navSide.style.top = "240px"
+					this.init()
+				}
 			}
-			console.log('距离顶部' + this.scrollTop)
 			for (let i = 0; i < this.data.length; i++) {
 				if (this.scrollTop >= this.data[i].offsetTop - this.offset) {
 					this.current = i
@@ -233,7 +234,7 @@ export default {
 <style lang="stylus" scoped>
 	.nav-side
 		position fixed
-		width 48px
+		width 60px
 		text-align center
 		top 240px
 		left auto
