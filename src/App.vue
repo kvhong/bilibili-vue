@@ -19,15 +19,15 @@ export default {
   },
   mounted() {
     this.$store.dispatch('getContentRows')
-    this.timer1 = setInterval(this.updateRank, 24*60*60*1000)
-		this.timer3 = setInterval(this.updateRank3, 3*24*60*60*1000)
-    this.timer7 = setInterval(this.updateRank7, 7*24*60*60*1000)
+    // this.timer1 = setInterval(this.updateRank, 24*60*60*1000)
+		// this.timer3 = setInterval(this.updateRank3, 3*24*60*60*1000)
+    // this.timer7 = setInterval(this.updateRank7, 7*24*60*60*1000)
   },
-  beforeDestroy() {
-    clearInterval(this.timer1);
-    clearInterval(this.timer3);
-    clearInterval(this.timer7);
-  },
+  // beforeDestroy() {
+  //   clearInterval(this.timer1);
+  //   clearInterval(this.timer3);
+  //   clearInterval(this.timer7);
+  // },
   data() {
     return {
       showMask: false,

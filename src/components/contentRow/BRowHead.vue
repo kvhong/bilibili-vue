@@ -2,7 +2,7 @@
 	<div class="b-head">
 		<span class="b-head-i" :class="category"></span>
 		<span class="b-head-t">
-			<a :href="'/'+categoryId" :title="category">
+			<a :href="'/'+category+'/'+categoryId" :title="category">
 				<h2>{{category}}</h2>
 			</a>
 		</span>
@@ -15,7 +15,7 @@
 			</li>
 		</ul> -->
 		<div class="b-link-more">
-			<a href="/video/music.html">
+			<a :href="'/'+category+'/'+categoryId">
 				更多<i class="b-icon b-icon-arrow-r"></i>
 			</a>
 		</div>
@@ -29,7 +29,7 @@
 		<div class="pmt-list pmt-inline">
 			<i class="pmt-icon"></i>
 			<div class="pmt-link">
-				<a href="//www.bilibili.com/video/av8977179/" target="_blank" data-loc-id="1558">一个人的恋爱循环
+				<a href="#" target="_blank" data-loc-id="1558">一个人的恋爱循环
 				</a>
 				<a></a>
 			</div>

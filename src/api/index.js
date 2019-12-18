@@ -1,16 +1,34 @@
 import * as url from './urlConfig'
 import axios from 'axios'
+// import { response } from 'express'
+
+export const commonApi = {
+	sendMessage(param) {
+		return axios.get(url.sendMessage+'?phone='+param.phone).then((response) => {
+			return response.data
+		})
+	},
+	userNameIsExist(username) {
+		return axios.get(url.userNameIsExist+'?userName='+username).then((response) => {
+			return response.data
+		})
+	},
+	nickNameIsExist(nickname) {
+		return axios.get(url.nickNameIsExist+'?nickName='+nickname).then((response) => {
+			return response.data
+		})
+	},
+	comparePassword(param) {
+		return axios.post(url.comparePassword, param).then((response) => {
+			return response.data
+		})
+	}
+}
 
 export const loginApi = {
 	login(param) {
 		return axios.post(url.login, param).then((response) => {
 			return response.data
-		})
-	},
-	code() {
-		return axios.get(url.code).then((response) => {
-			console.log('code',response)
-			return response
 		})
 	}
 }
@@ -21,22 +39,6 @@ export const registerApi = {
 			return response.data
 		}).catch((error) => {
 			console.log('register error',error)
-		})
-	},
-	userNameIsExist(username) {
-		return axios.get(url.userNameIsExist+'?userName='+username).then((response) => {
-			return response.data
-		})
-	},
-	nickNameIsExist(nickname) {
-		return axios.post(url.nickNameIsExist+'?nickName='+nickname).then((response) => {
-			console.log('nickNameIsExist',response)
-			return response.data
-		})
-	},
-	sendMessage(param) {
-		return axios.get(url.sendMessage+'?phone='+param.phone).then((response) => {
-			return response.data
 		})
 	}
 }
@@ -84,6 +86,92 @@ export const videoApi = {
 	},
 	comment() {
 		return axios.post(url.comment, param).then((response) => {
+			return response.data
+		})
+	}
+}
+
+export const centerApi = {
+	updateInfo(param) {
+		return axios.post(url.updateInfo, param).then((response) => {
+			return response.data
+		})
+	},
+	updatePassword(param) {
+		return axios.post(url.updatePassword, param).then((response) => {
+			return response.data
+		})
+	},
+	updateIcon(param) {
+		return axios.post(url.updateIcon, param).then((response) => {
+			return response.data
+		})
+	},
+	updateEmail(param) {
+		return axios.post(url.updateEmail, param).then((response) => {
+			return response.data
+		})
+	},
+	updatePhone(param) {
+		return axios.post(url.updatePhone, param).then((response) => {
+			return response.data
+		})
+	}
+}
+
+export const spaceApi = {
+	spaceVideo(param) {
+		return axios.get(url.spaceVideo+'?userId='+param.userId+'&pageNum='+param.pageNum+'&pageSize='+param.pageSize).then((response) => {
+			return response.data
+		})
+	},
+	mostPlay(param) {
+		return axios.get(url.mostPlay+'?userId='+param.userId+'&pageNum='+param.pageNum+'&pageSize='+param.pageSize).then((response) => {
+			return response.data
+		})
+	},
+	mostCollect(param) {
+		return axios.get(url.mostCollect+'?userId='+param.userId+'&pageNum='+param.pageNum+'&pageSize='+param.pageSize).then((response) => {
+			return response.data
+		})
+	},
+	videoNum(userId) {
+		return axios.get(url.videoNum+'?userId='+userId).then((response) => {
+			return response.data
+		})
+	},
+	underReview(param) {
+		return axios.get(url.underReview+'?userId='+param.userId+'&pageNum='+param.pageNum+'&pageSize='+param.pageSize).then((response) => {
+			return response.data
+		})
+	},
+	underReviewNum(userId) {
+		return axios.get(url.underReviewNum+'?userId='+userId).then((response) => {
+			return response.data
+		})
+	},
+	deletedVideo(param) {
+		return axios.get(url.deletedVideo+'?userId='+param.userId+'&pageNum='+param.pageNum+'&pageSize='+param.pageSize).then((response) => {
+			return response.data
+		})
+	},
+	deletedNum(userId) {
+		return axios.get(url.deletedNum+'?userId='+userId).then((response) => {
+			return response.data
+		})
+	},
+	spaceFav(param) {
+		return axios.get(url.fav+'?userId='+param.userId+'&pageNum='+param.pageNum+'&pageSize='+param.pageSize).then((response) => {
+			return response.data
+		})
+	},
+	favNum(userId) {
+		return axios.get(url.favNum+'?userId='+userId).then((response) => {
+			return response.data
+		})
+	},
+	cancelCollect(param) {
+		return axios.post(url.cancelCollect, param).then((response) => {
 			return response.data
 		})
 	}

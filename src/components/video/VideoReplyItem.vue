@@ -15,7 +15,7 @@
                 <i></i>
                 <span>{{item.comments}}</span>
             </span>
-            <span class="reply btn-hover btn-highlight">回复</span>
+            <span class="reply btn-hover btn-highlight" @click="isShow = !isShow">回复</span>
             <div class="operation">
                 <div class="spot"></div>
                 <div class="opera-list" style="display: none;">
@@ -25,36 +25,42 @@
                 </div>
             </div>
         </div>
+        <Comment :item="item" :commentType="'2'" v-show="isShow"></Comment>
     </div>
 </template>
 
 <script>
 import { videoApi } from 'api'
 import { getToken } from 'api/auth.js'
+import Comment from 'components/video/Comment.vue'
 export default {
     data() {
         return {
             qiniuAddress: this.Global,
-            userInfo: getToken()
+            userInfo: this.UserInfo,
+            isShow: false
         }
     },
     props: {
         item: {
             type: Object
+        },
+        videoId: {
+            type: String
         }
+    },
+    components: {
+        Comment
     },
     methods: {
         like() {
             if (this.userInfo === undefined) {
-
+                alert('请先登录')
             } else {
-                videoApi.commentPraise({}).then((response) => {
+                videoApi.commentPraise({ 'beLikedUserId': this.item.author_id, 'likeUserId': this.userInfo.iD, 'videoId': this.videoId, 'commentId': this.item.id }).then((response) => {
                     console.log(response)
                 })
             }
-        },
-        comment() {
-            
         }
     }
 }

@@ -53,14 +53,14 @@
 <script>
 import TopContainer from 'components/common/TopContainer.vue'
 import TopBanner from 'components/common/TopBanner.vue'
-import { registerApi } from 'api'
+import { commonApi, registerApi } from 'api'
 import { Message } from 'element-ui'
 export default {
     data() {
         const validatePass = (rule, value, callback) => {
             const userNameReg = /^[a-zA-Z][a-zA-Z0-9_]{5,19}$/
             if (userNameReg.test(value)) {
-                registerApi.userNameIsExist(value).then(res => {
+                commonApi.userNameIsExist(value).then(res => {
                     if (res) {
                         callback(new Error('用户名已存在'))
                     } else {
@@ -157,7 +157,7 @@ export default {
                 Message.error('请输入手机号')
             } else {
                 if (this.reg.test(this.form.phone)) {
-                    registerApi.sendMessage({ phone: this.form.phone }).then((response) => {
+                    commonApi.sendMessage({ phone: this.form.phone }).then((response) => {
                         Message.success('短信已经发送')
                         this.phoneCode = response
                     })

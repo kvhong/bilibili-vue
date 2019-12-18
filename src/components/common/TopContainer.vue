@@ -46,7 +46,7 @@
               </a>
             </li>
             <li class="nav-item profile-info" v-if="userInfo !== null" @mouseenter="show" @mouseleave="show">
-              <a href="/center" target="_blank" class="t">
+              <a :href="'/space/'+userInfo.iD+'/index'" target="_blank" class="t">
                 <div :class="face">
                   <img :src="qiniuAddress+userInfo.picture" class="face"/>
                   <img class="pendant">
@@ -61,7 +61,7 @@
                 <div class="member-menu">
                   <ul class="clearfix">
                     <li>
-                      <a href="/center" target="_blank" class="account">
+                      <a href="/center/info" target="_blank" class="account">
                       <i class="bili-icon b-icon-p-account"></i>
                       个人中心
                       </a>
@@ -160,7 +160,7 @@ export default {
       isShowPostMenu: false,
       isMessageShow: false,
       isHistoryShow: false,
-      userInfo: null,
+      userInfo: this.UserInfo,
       face: 'i-face'
     }
   },
@@ -187,12 +187,8 @@ export default {
     },
     logout() {
       removeToken()
+      this.$router.push({ path: '/' })
       this.reload()
-    }
-  },
-  mounted() {
-    if (getToken() !== undefined) {
-      this.userInfo = JSON.parse(getToken())
     }
   }
 }

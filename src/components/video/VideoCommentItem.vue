@@ -16,7 +16,7 @@
                     <i></i>
                     <span>{{item.comments}}</span>
                 </span>
-                <span class="reply btn-hover btn-highlight">回复</span>
+                <span class="reply btn-hover btn-highlight" @click="isShow = !isShow">回复</span>
                 <div class="operation">
                     <div class="spot"></div>
                     <div class="opera-list" style="display: none;">
@@ -26,8 +26,9 @@
                     </div>
                 </div>
             </div>
+            <Comment :item="item" :commentType="'1'" v-show="isShow"></Comment>
             <div class="reply-box">
-                <VideoReplyItem v-for="item in item.child" :key="item.id" :item="item"></VideoReplyItem>
+                <VideoReplyItem v-for="item in item.child" :key="item.id" :item="item" :videoId="videoId"></VideoReplyItem>
             </div>
         </div>
     </div>
@@ -35,35 +36,43 @@
 
 <script>
 import VideoReplyItem from 'components/video/VideoReplyItem.vue'
+import Comment from 'components/video/Comment.vue'
 import { getToken } from 'api/auth.js'
 import { videoApi } from 'api'
 export default {
     data() {
         return {
             qiniuAddress: this.Global,
-            userInfo: getToken()
+            userInfo: this.UserInfo,
+            isShow: false
         }
     },
     components: {
-        VideoReplyItem
+        VideoReplyItem,
+        Comment
     },
     props: {
         item: {
             type: Object
+        },
+        videoId: {
+            type: String
         }
     },
     methods: {
         like() {
             if (this.userInfo === undefined) {
-
+                alert('请先登录')
             } else {
-                videoApi.commentPraise({}).then((response) => {
+                videoApi.commentPraise({ 'beLikedUserId': this.item.author_id, 'likeUserId': this.userInfo.iD, 'videoId': this.videoId, 'commentId': this.item.id }).then((response) => {
                     console.log(response)
+                    if (response === '') {
+
+                    } else {
+                        
+                    }
                 })
             }
-        },
-        comment() {
-
         }
     }
 }

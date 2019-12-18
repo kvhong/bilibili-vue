@@ -6,6 +6,7 @@ import { getToken } from 'api/auth'
 const whiteList = ['/login', '/', '/register']// 不重定向白名单
 const whiteListReg_par = /^\/par\/+/
 const whiteListReg_video = /^\/video\/+/
+
 router.beforeEach((to, from, next) => {
     if (getToken()) { // 判断是否有token
         if (to.path === '/login') {

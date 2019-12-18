@@ -7,12 +7,16 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import router from './router'
 import './permission.js'
+import { getToken } from 'api/auth.js'
+import axios from 'axios'
 
 Vue.use(VueLazyload)
 Vue.use(ElementUI)
+axios.defaults.withCredentials=true
 
 Vue.prototype.HOST = '/api'
 Vue.prototype.Global = 'http://qiniu.clideo.cn/'
+Vue.prototype.UserInfo = getToken() === undefined ? '' : JSON.parse(getToken())
 
 import store from './store'
 /* eslint-disable no-new */

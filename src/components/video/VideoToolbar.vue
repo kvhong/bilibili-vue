@@ -26,7 +26,7 @@ import { videoApi } from 'api'
 export default {
     data() {
         return {
-            userInfo: getToken()
+            userInfo: this.UserInfo
         }
     },
     props: {
@@ -37,19 +37,29 @@ export default {
     methods: {
         like() {
             if (this.userInfo === undefined) {
-
+                alert('请先登录')
             } else {
-                videoApi.videoPraise({}).then((response) => {
+                videoApi.videoPraise({ 'beLikedUserId': this.item.author_id, 'likeUserId': this.userInfo.iD, 'videoId': this.item.id }).then((response) => {
                     console.log(response)
+                    if (response === '') {
+
+                    } else {
+                        
+                    }
                 })
             }
         },
         collect() {
             if (this.userInfo === undefined) {
-
+                alert('请先登录')
             } else {
-                videoApi.videoCollect({}).then((response) => {
+                videoApi.videoCollect({ 'userId': this.userInfo.iD, 'videoId': this.item.id }).then((response) => {
                     console.log(response)
+                    if (response === '') {
+
+                    } else {
+                        
+                    }
                 })
             }
         }

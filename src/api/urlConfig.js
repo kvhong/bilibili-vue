@@ -8,10 +8,10 @@ export const login = '/api/login'
 export const register = '/api/register/'
 
 // 判断用户名是否存在
-export const userNameIsExist = '/api/register/userNameIsExist'
+export const userNameIsExist = '/api/common/userNameIsExist'
 
 // 判断昵称是否存在
-export const nickNameIsExist = '/api/register/nickNameIsExist'
+export const nickNameIsExist = '/api/common/nickNameIsExist'
 
 // 发送短信验证码
 export const sendMessage = '/api/sendMsg/'
@@ -69,3 +69,54 @@ export const attention = '/api/attention/'
 
 // 评论
 export const comment = '/api/comment/'
+
+// 修改用户信息
+export const updateInfo = '/api/userInfo/updateInfo'
+
+// 修改密码
+export const updatePassword = '/api/userInfo/updatePassword'
+
+// 修改头像
+export const updateIcon = '/api/userInfo/updateIcon'
+
+// 修改邮箱
+export const updateEmail = '/api/userInfo/updateEmail'
+
+// 修改手机
+export const updatePhone = '/api/userInfo/updatePhone'
+
+// 比较密码
+export const comparePassword = '/api/common/comparePassword'
+
+// 个人视频
+export const spaceVideo = serverRoot + ':8300/userVideo/'
+
+// 个人视频数量
+export const videoNum = serverRoot + ':8300/userVideo/videoNum'
+
+// 最多播放
+export const mostPlay = serverRoot + ':8300/userVideo/mostPlay'
+
+// 最多收藏
+export const mostCollect = serverRoot + ':8300/userVideo/mostCollect'
+
+// 审核中视频
+export const underReview = serverRoot + ':8300/userVideo/noPassVideos'
+
+// 审核视频数量
+export const underReviewNum = serverRoot + ':8300/userVideo/noPassNum'
+
+// 已删除视频
+export const deletedVideo = serverRoot + ':8300/userVideo/deletedVideos'
+
+// 已删除数量
+export const deletedNum = serverRoot + ':8300/userVideo/deletedNum'
+
+// 收藏列表
+export const fav = serverRoot + ':8400/videoCollection/getCollections'
+
+// 收藏数量
+export const favNum = serverRoot + ':8400/videoCollection/getCollectNum'
+
+// 取消收藏
+export const cancelCollect = serverRoot + ':8400/videoCollection/cancelCollect'

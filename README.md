@@ -1,15 +1,14 @@
-
-预览地址： [http://www.lybenson.com/bilibili/](http://www.lybenson.com/bilibili/)
+﻿
+预览地址： []()
 
 ## 技术栈
 
-前端：vue2 + vuex + webpack + ES6/7 + stylus + nginx
+前端：vue2 + vuex + webpack + ES6/7 + stylus 
 
-后端：koa2
 
 ## 项目运行
 
-#### 源码地址:  [https://github.com/lybenson/bilibili-vue](https://github.com/lybenson/bilibili-vue) 
+#### 源码地址:  []() 
 
 #### 如何运行
 
@@ -18,7 +17,7 @@
 `clone`项目到本地
 
 ```shell
-git clone https://github.com/lybenson/bilibili-vue.git
+git clone 
 ```
 
 前端运行
@@ -29,15 +28,7 @@ npm install
 npm run dev
 ```
 
-后端运行
-
-```shell
-cd bilibili-vue/bilibili-api
-npm install
-npm run dev
-```
-
-为了确保运行正确，请先运行后端服务。再运行前端，之后访问 http://localhost:8080
+运行前端之后访问 http://localhost:8080
 
 ## 组件
 
@@ -150,22 +141,6 @@ npm install stylus --save-dev
 
 完成项目后将发布到自己的服务器上，首先确保服务器已安装`nodejs`，具体安装步骤不再赘述。
 
-#### 后端发布
-
-后端采用`pm2`做项目管理
-
-安装`pm2`
-
-```shell
-npm install pm2 -g
-```
-
-启动项目
-
-```
-cd bilibili-api && npm install 
-pm2 start index.js
-```
 
 #### 前端发布
 
@@ -196,7 +171,7 @@ new ExtractTextPlugin('[name].[contenthash].css')
 
 将分离的`css`打包路径分离到`static`文件夹之外。
 
-打包完成后上传到服务器`/var/www/html/bilibili`目录下。
+打包完成后上传到服务器``目录下。
 
 2. 配置nginx服务器。
 
@@ -215,25 +190,24 @@ new ExtractTextPlugin('[name].[contenthash].css')
 
 首页：
 
-![20170423210104.png](http://upload-images.jianshu.io/upload_images/426435-d2a3e8b1463cdd2e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 
 轮播：
 
-![20170423213449.png](http://upload-images.jianshu.io/upload_images/426435-edce08bcca33c6a1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 
 直播：
 
-![20170423210140.png](http://upload-images.jianshu.io/upload_images/426435-c2a8412724f6a121.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-![20170423210218.png](http://upload-images.jianshu.io/upload_images/426435-e0f463350b7b5f21.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 
 排行：
 
-![20170423210248.png](http://upload-images.jianshu.io/upload_images/426435-6c61dcd032f80f92.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 
 游戏：
 
-![20170423213519.png](http://upload-images.jianshu.io/upload_images/426435-bf8786eee29a4f3a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 
 拖拽排序与滚动效果：
 
-![20170423213599.png](http://upload-images.jianshu.io/upload_images/426435-1ef3ae591420a074.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+

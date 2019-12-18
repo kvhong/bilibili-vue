@@ -41,37 +41,8 @@ export default {
 			type: String
 		}
 	},
-	data() {
-		return {
-			// isSelected1: true,
-			// isSelected2: false,
-			// selectedTitle: '三日',
-			// isOrigin: false, //全部还是原创
-			// isWeek: false //三日排行or一周排行
-		}
-	},
 	components: {
 		BRowRankBody
-	},
-	methods: {
-		// selectedItem1() {
-		// 	this.selectedTitle = '三日'
-		// 	this.isSelected1 = true
-		// 	this.isSelected2 = false
-		// 	this.isWeek = false
-		// },
-		// selectedItem2() {
-		// 	this.selectedTitle = '一周'
-		// 	this.isSelected1 = false
-		// 	this.isSelected2 = true
-		// 	this.isWeek = true
-		// },
-		// hot() {
-		// 	this.isOrigin = false
-		// },
-		// original() {
-		// 	this.isOrigin = true
-		// }
 	}
 }
 </script>

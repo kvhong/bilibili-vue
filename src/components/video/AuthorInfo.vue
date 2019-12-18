@@ -40,7 +40,7 @@ export default {
     data() {
         return {
             qiniuAddress: this.Global,
-            userInfo: getToken()
+            userInfo: this.UserInfo
         }
     },
     props: {
@@ -51,10 +51,15 @@ export default {
     methods: {
         attention() {
             if (this.userInfo === undefined) {
-
+                alert('请先登录')
             } else {
-                videoApi.attention({}).then((response) => {
+                videoApi.attention({ 'userId': this.userInfo.iD, 'attentionUserId': this.item.id }).then((response) => {
                     console.log(response)
+                    // if (response === '') {
+
+                    // } else {
+                        
+                    // }
                 })
             }
         }

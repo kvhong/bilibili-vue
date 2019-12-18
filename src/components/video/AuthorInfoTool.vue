@@ -1,9 +1,9 @@
 <template>
-    <div class="user-card-m" style="left: 707.5px; top: 148px;"><!---->
+    <div class="user-card-m" style="left: 707.5px; top: 148px;">
         <div>
-            <div class="bg" style="background-image: url(&quot;//i1.hdslb.com/bfs/space/768cc4fd97618cf589d23c2711a1d1a729f42235.png@.webp&quot;);"></div>
+            <div class="bg"></div>
             <a href="#" target="_blank" class="face">
-                <img :src="qiniuAddress+item.picture" width="50" height="50"><!----><!---->
+                <img :src="qiniuAddress+item.picture" width="50" height="50">
             </a>
             <div class="info">
                 <p class="user">
@@ -38,7 +38,7 @@ export default {
     data() {
         return {
             qiniuAddress: this.Global,
-            userInfo: getToken()
+            userInfo: this.UserInfo
         }
     },
     props: {
@@ -49,10 +49,15 @@ export default {
     methods: {
         attention() {
             if (this.userInfo === undefined) {
-
+                alert('请先登录')
             } else {
-                videoApi.attention({}).then((response) => {
+                videoApi.attention({ 'userId': this.userInfo.iD, 'attentionUserId': this.item.id }).then((response) => {
                     console.log(response)
+                    if (response === '') {
+
+                    } else {
+                        
+                    }
                 })
             }
         }
@@ -81,6 +86,7 @@ export default {
     left: 0;
     border-radius: 4px 4px 0 0;
     overflow: hidden;
+    background: url('../../assets/images/768cc4fd97618cf589d23c2711a1d1a729f42235.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 50%;
