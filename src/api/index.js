@@ -3,6 +3,11 @@ import axios from 'axios'
 // import { response } from 'express'
 
 export const commonApi = {
+	getPartition() {
+		return axios.get(url.getPartition).then((response) => {
+			return response.data
+		})
+	},
 	sendMessage(param) {
 		return axios.get(url.sendMessage+'?phone='+param.phone).then((response) => {
 			return response.data
@@ -22,13 +27,56 @@ export const commonApi = {
 		return axios.post(url.comparePassword, param).then((response) => {
 			return response.data
 		})
+	},
+	attention(param) {
+		return axios.post(url.attention, param).then((response) => {
+			return response.data
+		})
+	},
+	cancelAttention(param) {
+		return axios.post(url.cancelAttention, param).then((response) => {
+			return response.data
+		})
+	},
+	attentionState(param) {
+		return axios.post(url.attentionState, param).then((response) => {
+			return response.data
+		})
+	},
+	watch(videoId) {
+		return axios.get(url.watch+'?videoId='+videoId).then((response) => {
+			return response.data
+		})
+	}
+}
+
+export const homeApi = {
+	search(param) {
+		return axios.post(url.search, param).then((response) => {
+			return response.data
+		})
+	},
+	searchUser(param) {
+		return axios.post(url.searchUser, param).then((response) => {
+			return response.data
+		})
+	},
+	searchVideo(param) {
+		return axios.post(url.searchVideo, param).then((response) => {
+			return response.data
+		})
 	}
 }
 
 export const loginApi = {
 	login(param) {
 		return axios.post(url.login, param).then((response) => {
-			return response.data
+			return response
+		})
+	},
+	logout() {
+		return axios.get(url.logout).then((response) => {
+			return response.status
 		})
 	}
 }
@@ -64,28 +112,28 @@ export const videoApi = {
 			return response.data
 		})
 	},
-	videoPraise() {
+	videoPraise(param) {
 		return axios.post(url.videoPraise, param).then((response) => {
 			return response.data
 		})
 	},
-	commentPraise() {
+	commentPraise(param) {
 		return axios.post(url.commentPraise, param).then((response) => {
 			return response.data
 		})
 	},
-	videoCollect() {
+	videoCollect(param) {
 		return axios.post(url.videoCollect, param).then((response) => {
 			return response.data
 		})
 	},
-	attention() {
-		return axios.post(url.attention, param).then((response) => {
+	comment(param) {
+		return axios.post(url.comment, param).then((response) => {
 			return response.data
 		})
 	},
-	comment() {
-		return axios.post(url.comment, param).then((response) => {
+	likeState(param) {
+		return axios.post(url.likeState, param).then((response) => {
 			return response.data
 		})
 	}
@@ -120,6 +168,11 @@ export const centerApi = {
 }
 
 export const spaceApi = {
+	getInfo(userId) {
+		return axios.get(url.getInfo+'?userId='+userId).then((response) => {
+			return response.data
+		})
+	},
 	spaceVideo(param) {
 		return axios.get(url.spaceVideo+'?userId='+param.userId+'&pageNum='+param.pageNum+'&pageSize='+param.pageSize).then((response) => {
 			return response.data
@@ -165,6 +218,11 @@ export const spaceApi = {
 			return response.data
 		})
 	},
+	favTotal(userId) {
+		return axios.get(url.favTotal+'?userId='+userId).then((response) => {
+			return response.data
+		})
+	},
 	favNum(userId) {
 		return axios.get(url.favNum+'?userId='+userId).then((response) => {
 			return response.data
@@ -174,13 +232,129 @@ export const spaceApi = {
 		return axios.post(url.cancelCollect, param).then((response) => {
 			return response.data
 		})
+	},
+	collectState(param) {
+		return axios.post(url.collectState, param).then((response) => {
+			return response.data
+		})
+	},
+	favMostPlay(param) {
+		return axios.get(url.favMostPlay+'?userId='+param.userId+'&pageNum='+param.pageNum+'&pageSize='+param.pageSize).then((response) => {
+			return response.data
+		})
+	},
+	newUpload(param) {
+		return axios.get(url.newUpload+'?userId='+param.userId+'&pageNum='+param.pageNum+'&pageSize='+param.pageSize).then((response) => {
+			return response.data
+		})
+	},
+	userTags(userId) {
+		return axios.get(url.userTags+'?userId='+userId).then((response) => {
+			return response.data
+		})
+	},
+	updateUserTag(param) {
+		return axios.post(url.updateUserTag, param).then((response) => {
+			return response.data
+		})
+	},
+	updateToutu(param) {
+		return axios.post(url.updateToutu, param).then((response) => {
+			return response.data
+		})
+	},
+	updateState(param) {
+		return axios.post(url.updateState, param).then((response) => {
+			return response.data
+		})
+	},
+	attentionList(param) {
+		return axios.get(url.attentionList+'?userId='+param.userId+'&pageNum='+param.pageNum+'&pageSize='+param.pageSize).then((response) => {
+			return response.data
+		})
+	},
+	fansList(param) {
+		return axios.get(url.fansList+'?userId='+param.userId+'&pageNum='+param.pageNum+'&pageSize='+param.pageSize).then((response) => {
+			return response.data
+		})
+	}
+}
+
+export const uploadApi = {
+	uploadVideo(param) {
+		return axios.post(url.uploadVideo, param).then((response) => {
+			return response.data
+		})
+	},
+	updateVideo(param) {
+		return axios.post(url.updateVideo, param).then((response) => {
+			return response.data
+		})
+	},
+	videoComments(param) {
+		return axios.get(url.videoComments+'?userId='+param.userId+'&pageNum='+param.pageNum+'&pageSize='+param.pageSize).then((response) => {
+			return response.data
+		})
+	},
+	changeState(param) {
+		return axios.get(url.changeState+'?commentId='+param.commentId+'&state='+param.state).then((response) => {
+			return response.data
+		})
+	},
+	searchComment(param) {
+		return axios.post(url.searchComment, param).then((response) => {
+			return response.data
+		})
+	},
+	videoManage(param) {
+		return axios.get(url.videoManage+'?userId='+param.userId+'&state='+param.state+'&pageNum='+param.pageNum+'&pageSize='+param.pageSize).then((response) => {
+			return response.data
+		})
+	},
+	deleteVideo(param) {
+		return axios.post(url.deleteVideo, param).then((response) => {
+			return response.data
+		})
+	},
+	cancelUpload(param) {
+		return axios.post(url.cancelUpload, param).then((response) => {
+			return response.data
+		})
+	}
+}
+
+export const messageApi = {
+	getLike(param) {
+		return axios.get(url.getLike+'?beLikedUserId='+param.beLikedUserId+'&pageNum='+param.pageNum+'&pageSize='+param.pageSize).then((response) => {
+			return response.data
+		})
+	},
+	getReply(param) {
+		return axios.get(url.getReply+'?beReplyUserId='+param.beReplyUserId+'&pageNum='+param.pageNum+'&pageSize='+param.pageSize).then((response) => {
+			return response.data
+		})
+	},
+	getAttention(param) {
+		return axios.get(url.getAttention+'?userId='+param.userId+'&pageNum='+param.pageNum+'&pageSize='+param.pageSize).then((response) => {
+			return response.data
+		})
+	},
+	getNotice(param) {
+		return axios.get(url.getNotice+'?pageNum='+param.pageNum+'&pageSize='+param.pageSize).then((response) => {
+			return response.data
+		})
 	}
 }
 
 //获取轮播图
 export const bannerApi = {
-	list() {
-		return axios.get(url.banner).then((response) => {
+	banner(top) {
+		return axios.get(url.banner+'?top='+top).then((response) => {
+			return response.data
+		})
+	},
+	bannerList(param) {
+		return axios.get(url.bannerList+'?pageNum='+param.pageNum+'&pageSize='+param.pageSize).then((response) => {
 			return response.data
 		})
 	}
@@ -247,11 +421,6 @@ export const contentrankApi = {
 		return axios.get(url.contentrank+'?top='+param.top+'&partitionId='+param.partitionId).then((response) => {
 			return response.data
 		})
-	},
-	// contentrankweek(param) {
-	// 	return axios.post(url.contentrankweek, param).then((response) => {
-	// 		return response.data
-	// 	})
-	// }
+	}
 }
 

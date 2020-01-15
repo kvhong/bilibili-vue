@@ -6,13 +6,13 @@
 					<BannerItem v-for="item in bannerlist" :key="item.id" :banner="item"></BannerItem>
 				</ul>
 			</div>
-			<a class="more-topic" href="/topic/integrated-1.html" target="_blank" v-show="show">更多
+			<a class="more-topic" href="/topic" target="_blank" v-show="show">更多
 				<i class="b-icon"></i>
 			</a>
 			<div class="s-bottom">
 				<div class="title" v-if="bannerlist[count]">
 					<span class="">
-						<img src="//static.hdslb.com/images/base/ad.png" style="width: 32px; height: 20px: margin-left: 5px;vertical-align: middle;" v-if="bannerlist[count].is_ad">
+						<img src="../../assets/images/ad.png" style="width: 32px; height: 20px: margin-left: 5px;vertical-align: middle;" v-if="bannerlist[count].is_ad">
 						<a :href="bannerlist[count].url" target="_blank">{{ bannerlist[count].name }}</a>
 					</span>
 				</div>

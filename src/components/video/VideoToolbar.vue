@@ -2,13 +2,14 @@
     <div>
         <div id="arc_toolbar_report" class="video-toolbar report-wrap-module report-scroll-module" scrollshow="true">
             <div class="ops">
-                <span :title="'点赞数'+item.comments" class="like" @click="like">
-                    <i class="van-icon-videodetails_like" style="color:;"></i>
+                <!-- 待测试 -->
+                <span :title="'点赞数'+item.comments" class="like" @click="like" :disabled="likeState">
+                    <i class="van-icon-videodetails_like" :class="likeState ? 'active' : ''"></i>
                     {{item.comments}}
                 </span>
                 <span :title="'收藏人数'+item.collections" class="collect" @click="collect">
                     <canvas width="34" height="34" class="ring-progress" style="width:34px;height:34px;left:-3px;top:-3px;"></canvas>
-                    <i class="van-icon-videodetails_collec" style="color:;"></i>
+                    <i class="van-icon-videodetails_collect" :class="state ? 'active' : ''"></i>
                     {{item.collections}}
                 </span>
                 <!-- <span title="分享" class="share">
@@ -22,11 +23,14 @@
 
 <script>
 import { getToken } from 'api/auth.js'
-import { videoApi } from 'api'
+import { spaceApi, videoApi } from 'api'
+import { Message } from 'element-ui'
 export default {
     data() {
         return {
-            userInfo: this.UserInfo
+            userInfo: this.UserInfo,
+            state: Boolean,
+            likeState: Boolean
         }
     },
     props: {
@@ -36,33 +40,61 @@ export default {
     },
     methods: {
         like() {
-            if (this.userInfo === undefined) {
-                alert('请先登录')
+            if (!this.likeState) {
+                if (this.userInfo === '') {
+                    alert('请先登录')
+                } else {
+                    videoApi.videoPraise({ 'beLikedUserId': this.item.author_id, 'likeUserId': this.userInfo.iD, 'videoId': this.item.id }).then((response) => {
+                        if (response === '') {
+                            this.likeState = true
+                            Message.success('点赞成功')
+                        } else {
+                            Message.error('错误',response)
+                        }
+                    })
+                }
             } else {
-                videoApi.videoPraise({ 'beLikedUserId': this.item.author_id, 'likeUserId': this.userInfo.iD, 'videoId': this.item.id }).then((response) => {
-                    console.log(response)
+                return
+            }
+        },
+        collect() {
+            if (!this.state) {
+                if (this.userInfo === '') {
+                    alert('请先登录')
+                } else {
+                    videoApi.videoCollect({ 'userId': this.userInfo.iD, 'videoId': this.item.id }).then((response) => {
+                        if (response === '') {
+                            this.state = true
+                            Message.success('收藏成功')
+                        } else {
+                            Message.error('错误',response)
+                        }
+                    })
+                }
+            } else {
+                spaceApi.cancelCollect({ 'userId': this.userInfo.iD, 'videoId': this.item.id }).then((response) => {
                     if (response === '') {
-
+                        this.state = false
                     } else {
-                        
+                        Message.error('错误',response)
                     }
                 })
             }
         },
-        collect() {
-            if (this.userInfo === undefined) {
-                alert('请先登录')
-            } else {
-                videoApi.videoCollect({ 'userId': this.userInfo.iD, 'videoId': this.item.id }).then((response) => {
-                    console.log(response)
-                    if (response === '') {
-
-                    } else {
-                        
-                    }
-                })
-            }
+        getCollectState() {
+			spaceApi.collectState({ 'userId': this.userInfo.iD, 'videoId': this.item.id }).then((response) => {
+				this.state = response
+			})
+        },
+        getLikeState() {
+            videoApi.likeState({ 'beLikedUserId': this.item.author_id, 'likeUserId': this.userInfo.iD, 'videoId': this.item.id }).then((response) => {
+                this.likeState = response
+            })
         }
+    },
+    mounted() {
+        this.getCollectState()
+        this.getLikeState()
     }
 }
 </script>
@@ -106,11 +138,18 @@ export default {
 }
 .video-toolbar .ops>span .van-icon-videodetails_like {
     background: url(../../assets/images/icons.png) no-repeat;
-    background-position: -719px -2064px;
+    background-position: -658px -2064px;
 }
-.video-toolbar .ops>span .van-icon-videodetails_collec {
+.video-toolbar .ops>span .van-icon-videodetails_collect {
     background: url(../../assets/images/icons.png) no-repeat;
-    background-position: -662px -465px;
+    background-position: -658px -402px;
+}
+.video-toolbar .ops>span .van-icon-videodetails_like.active {
+    pointer-events: none;
+    background-position: -722px -2064px;
+}
+.video-toolbar .ops>span .van-icon-videodetails_collect.active {
+     background-position: -724px -402px;
 }
 [class^=van-icon-] {
     display: inline-block;

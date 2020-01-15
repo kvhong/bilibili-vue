@@ -42,7 +42,7 @@
                                 </el-tag>
                             </div>
                             <div class="setting-add-tag">
-                                <el-input type="text" maxlength="10" class="length-check" size="small" v-model="tag"></el-input>
+                                <el-input type="text" maxlength="10" class="length-check" size="small" v-model.trim="tag"></el-input>
                                 <span id="setting-new-tag-btn" @click="add">新增</span>
                             </div>
                         </div>
@@ -54,32 +54,73 @@
 </template>
 
 <script>
+import { spaceApi } from 'api'
+import { Message } from 'element-ui'
+import { setToken } from 'api/auth.js'
 export default {
     data() {
         return {
             userInfo: this.UserInfo,
-            collectSwitch: true,
-            infoSwitch: true,
+            collectSwitch: this.UserInfo.collect_state === 0 ? true : false,
+            infoSwitch: this.UserInfo.info_state === 0 ? true : false,
             tag: '',
             tags: [
-                '1111','222','33','4'
+                
             ]
         }
     },
     methods: {
+        getTags() {
+            spaceApi.userTags(this.userInfo.iD).then((response) => {
+                this.tags = response
+            })
+        },
         switchChange(val) {
-            if (val === 'collect') {
-                
-            } else {
-
+            switch (val) {
+                case 'collect':
+                    let collectState = this.collectSwitch === true ? 0 : 1
+                    spaceApi.updateState({ 'id': this.userInfo.iD, 'collectState': collectState }).then((response) => {
+                        if (response === '') {
+                            this.userInfo.collect_state = collectState
+                            setToken(this.userInfo)
+                        } else {
+                            Message.error(response)
+                        }
+                    })
+                    break;
+                case 'info':
+                    let infoState = this.infoSwitch === true ? 0 : 1
+                    spaceApi.updateState({ 'id': this.userInfo.iD, 'infoState': infoState }).then((response) => {
+                        if (response === '') {
+                            this.userInfo.info_state = infoState
+                            setToken(this.userInfo)
+                        } else {
+                            Message.error(response)
+                        }
+                    })
+                    break;
             }
         },
         add() {
             this.tags.push(this.tag)
             this.tag = ''
+            spaceApi.updateUserTag({ 'userId': this.userInfo.iD, 'labelId': this.tags }).then((response) => {
+                if (response === '') {
+                    Message.success('添加成功')
+                } else {
+                    Message.error('添加失败',response)
+                }
+            })
         },
         handleClose(tag) {
-            this.tags.splice(this.tags.indexOf(tag), 1);
+            this.tags.splice(this.tags.indexOf(tag), 1)
+            spaceApi.updateUserTag({ 'userId': this.userInfo.iD, 'labelId': this.tags }).then((response) => {
+                if (response === '') {
+                    Message.success('删除成功')
+                } else {
+                    Message.error('删除失败',response)
+                }
+            })
         }
     }
 }

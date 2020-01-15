@@ -45,7 +45,9 @@ export default {
     },
     methods: {
         getParams() {
-            this.active = this.$route.fullPath.split('/')[4]
+            let path = this.$route.fullPath
+            // .split('/')[4]
+            this.active = path.substring(path.lastIndexOf('/')+1)
         },
         getTotal() {
             spaceApi.videoNum(this.userInfo.iD).then((response) => {

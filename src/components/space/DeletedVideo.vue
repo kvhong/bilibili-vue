@@ -30,7 +30,7 @@
 
                     </ul>
                     <ul class="clearfix cube-list" :class="listStyle === 'cube' ? '' : 'unshow'">
-                        <BRowItem v-for="item in videoList" :key="item.id" :item="item"></BRowItem>
+                        <BRowItem v-for="item in videoList" :key="item.id" :item="item" :collect="false"></BRowItem>
                     </ul>
                 </div>
                 <el-pagination layout="total, prev, pager, next"
@@ -258,7 +258,7 @@ export default {
     background-repeat: no-repeat;
     border-radius: 4px;
     color: #6d757a;
-    content: "\7A7A\95F4\4E3B\4EBA\8FD8\6CA1\6709\6295\8FC7\89C6\9891\54E6~~";
+    content: "空间主人还没有投过视频哦~~";
     display: block;
     font-size: 14px;
     height: 450px;
@@ -268,7 +268,7 @@ export default {
 }
 .section.empty.video:after {
     color: #6d757a;
-    content: "\7A7A\95F4\4E3B\4EBA\8FD8\6CA1\6709\6295\8FC7\89C6\9891\54E6~~";
+    content: "空间主人还没有投过视频哦~~";
     display: block;
     font-size: 14px;
     overflow: hidden;

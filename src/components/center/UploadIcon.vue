@@ -31,17 +31,23 @@
                             <div class="pre-info">当前头像</div>
                         </div>
                     </div> 
-                    <p class="descript" style="font-size: 12px">请选择图片上传：大小180 * 180像素支持JPG、PNG等格式，图片需小于2M</p> 
+                    <p class="descript" style="font-size: 12px">请选择图片上传：支持JPG、PNG格式，图片需小于2M</p> 
                     <div class="modal-footer">
                         <input type="button" value="更新" :class="disabled ? 'modal-btn btn-confirm disabled' : 'modal-btn btn-confirm'" @click="submitUpload">
                     </div>
                 </div>
             </div>
         </div>
+        <Loading v-show="loading" :content="'上传中'"></Loading>
+        <Success v-show="Suc" :content="successContent" v-on:close="sucClose"></Success>
+        <Error v-show="Err" :content="errorContent" v-on:close="close"></Error>
     </div>
 </template>
 
 <script>
+import Loading from 'components/dialog/Loading'
+import Success from 'components/dialog/Success'
+import Error from 'components/dialog/Error'
 import { centerApi } from 'api'
 import { getToken, setToken } from 'api/auth.js'
 import { Message } from 'element-ui'
@@ -51,6 +57,11 @@ export default {
     inject: ['reload'],
     data() {
         return {
+            loading: false,
+            Suc: false,
+            successContent: '',
+            Err: false,
+            errorContent: '',
             qiniuAddress: this.Global,
             userInfo: this.UserInfo,
             file: '',
@@ -59,8 +70,20 @@ export default {
             disabled: true
         }
     },
+    components: {
+        Loading,
+        Success,
+        Error
+    },
     methods: {
+        sucClose() {
+            this.Suc = false
+        },
+        close() {
+            this.Err = false
+        },
         submitUpload() {
+            this.loading = true
             var uptoken
             var policy = {}
             var bucketName = 'clideo'
@@ -96,21 +119,31 @@ export default {
                         },
                         complete: (result) => {
                         // 接收成功后返回的信息
+                            this.loading = false
+                            this.successContent = '更新成功'
+                            this.Suc = true
                             this.userInfo.picture = 'image/picture/'+this.picture
                             setToken(this.userInfo)
-                            Message.success('更新成功')
+                            // Message.success('更新成功')
                             this.$router.push({ path: '/center/headIcon'})
                             this.reload()
                         }
                     })
                 } else {
-                    Message.error('更新失败')
+                    this.loading = false
+                    this.errorContent = '更新失败'
+                    this.Err = true
+                    // Message.error('更新失败')
                 }
+            }).catch(() => {
+                this.loading = false
+                this.errorContent = '服务器错误'
+                this.Err = true
             })
         },
         onUploadChange(file) {
             const isIMAGE = (file.raw.type === 'image/jpeg' || file.raw.type === 'image/png'|| file.raw.type === 'image/jpg');
-            const isLt1M = file.size / 1024 / 1024 <= 2;
+            const isLt1M = file.size / 1024 / 1024 < 2;
 
             if (!isIMAGE) {
                 this.$message.error('上传文件只能是图片格式!');

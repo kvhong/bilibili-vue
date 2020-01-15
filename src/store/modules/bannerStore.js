@@ -13,7 +13,7 @@ const actions = {
 	bannerlist({commit, state, rootState}) {
 		rootState.requesting = true
 		commit(TYPE.BANNER_LIST_REQUEST)
-		bannerApi.list().then((response) => {
+		bannerApi.banner(5).then((response) => {
 			rootState.requesting = false
 			commit(TYPE.BANNER_LIST_SUCCESS, response)
 		}, (error) => {
@@ -28,7 +28,7 @@ const mutations = {
 
 	},
 	[TYPE.BANNER_LIST_SUCCESS] (state, bannerlist) {
-		state.bannerlist = bannerlist.data
+		state.bannerlist = bannerlist
 	},
 	[TYPE.BANNER_LIST_FAILURE] (state) {
 

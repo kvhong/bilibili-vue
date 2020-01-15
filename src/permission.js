@@ -3,9 +3,10 @@ import store from './store'
 import { Message } from 'element-ui'
 import { getToken } from 'api/auth'
 
-const whiteList = ['/login', '/', '/register']// 不重定向白名单
+const whiteList = ['/login', '/', '/register','/search','/search/index','/hot','/topic']// 不重定向白名单
 const whiteListReg_par = /^\/par\/+/
 const whiteListReg_video = /^\/video\/+/
+const whiteListReg_ospace = /^\/ospace\/+/
 
 router.beforeEach((to, from, next) => {
     if (getToken()) { // 判断是否有token
@@ -26,7 +27,7 @@ router.beforeEach((to, from, next) => {
             // }
         }
     } else {
-        if (whiteList.indexOf(to.path) !== -1 || whiteListReg_par.test(to.path) || whiteListReg_video.test(to.path)) { // 在免登录白名单，直接进入
+        if (whiteList.indexOf(to.path) !== -1 || whiteListReg_par.test(to.path) || whiteListReg_video.test(to.path) || whiteListReg_ospace.test(to.path)) { // 在免登录白名单，直接进入
             next()
         } else {
             next('/login') // 否则全部重定向到登录页

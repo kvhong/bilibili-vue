@@ -13,7 +13,7 @@
                 <span>主站</span>
               </a>
             </li>
-            <li class="hbili">
+            <!-- <li class="hbili">
               <a class="i-link" href="//h.bilibili.com/" title="画友">画友</a>
             </li>
             <li class="b-gc" hasframe="true">
@@ -30,12 +30,12 @@
               <em class="new"></em>
               </a>
             </li>
-            <li></li>
+            <li></li> -->
           </ul>
         </div>
         <div class="uns_box">
           <ul class="menu">
-            <li id="i_menu_login_reg" guest="yes" class="u-i" style="display: list-item" v-if="userInfo === null">
+            <li id="i_menu_login_reg" guest="yes" class="u-i" style="display: list-item" v-if="userInfo === ''">
               <!-- href="/login" -->
               <a id="i_menu_login_btn" class="i-link login" @click="toLogin">
                 <span>登录</span>
@@ -45,7 +45,7 @@
                 <span>注册</span>
               </a>
             </li>
-            <li class="nav-item profile-info" v-if="userInfo !== null" @mouseenter="show" @mouseleave="show">
+            <li class="nav-item profile-info" v-if="userInfo !== ''" @mouseenter="show" @mouseleave="show">
               <a :href="'/space/'+userInfo.iD+'/index'" target="_blank" class="t">
                 <div :class="face">
                   <img :src="qiniuAddress+userInfo.picture" class="face"/>
@@ -67,7 +67,7 @@
                       </a>
                     </li>
                     <li>
-                      <a href="/upload" target="_blank" class="member">
+                      <a href="/upload/uploadVideo" target="_blank" class="member">
                       <i class="bili-icon b-icon-p-member"></i>
                       投稿管理
                       </a>
@@ -79,27 +79,39 @@
                 </div>
               </div>
             </li>
-            <li id="i_menu_login_reg" guest="yes" class="u-i" style="display: list-item" v-if="userInfo !== null">
-              <a id="i_menu_message_btn" class="i-link message" href="/message" target="_blank" @mouseenter="isMessageShow = !isMessageShow" @mouseleave="isMessageShow = !isMessageShow">
+            <li id="i_menu_login_reg" guest="yes" class="u-i" style="display: list-item" v-if="userInfo !== ''">
+              <a id="i_menu_message_btn" class="i-link message" href="/message/getBack" target="_blank" @mouseenter="isMessageShow = !isMessageShow" @mouseleave="isMessageShow = !isMessageShow">
+                <el-badge :is-dot="GetBack || AttentionMe || Likes || SystemNot || MyMessage" class="item">
                 <span>
                   消息
                 </span>
+                </el-badge>
                 <div class="i-frame-message" v-show="isMessageShow">
-                  <div href="/message/#/reply" target="_blank" class="im-list">
+                  <a href="/message/getBack" :target="route === 'message' ? '_self' : '_blank'" class="im-list" @click="get('GetBack')">
+                    <el-badge :is-dot="GetBack" class="item">
                     回复我的
-                  </div>
-                  <div href="/message/#/at" target="_blank" class="im-list">
-                    @我的
-                  </div>
-                  <div href="/message/#/love" target="_blank" class="im-list">
+                    </el-badge>
+                  </a>
+                  <a href="/message/attentionMe" :target="route === 'message' ? '_self' : '_blank'" class="im-list" @click="get('AttentionMe')">
+                    <el-badge :is-dot="AttentionMe" class="item">
+                    关注我的
+                    </el-badge>
+                  </a>
+                  <a href="/message/likes" :target="route === 'message' ? '_self' : '_blank'" class="im-list" @click="get('Likes')">
+                    <el-badge :is-dot="Likes" class="item">
                     收到的赞
-                  </div>
-                  <div href="/message/#/system" target="_blank" class="im-list">
+                    </el-badge>
+                  </a>
+                  <a href="/message/systemNot" :target="route === 'message' ? '_self' : '_blank'" class="im-list" @click="get('SystemNot')">
+                    <el-badge :is-dot="SystemNot" class="item">
                     系统通知
-                  </div>
-                  <div href="/message/#/whisper" target="_blank" class="im-list">
+                    </el-badge>
+                  </a>
+                  <a href="/message/myMessage" :target="route === 'message' ? '_self' : '_blank'" class="im-list" @click="get('MyMessage')">
+                    <el-badge :is-dot="MyMessage" class="item">
                     我的消息
-                  </div>
+                    </el-badge>
+                  </a>
                 </div>
               </a>
               <i class="s-line"></i>
@@ -138,36 +150,66 @@
               </a>
             </li>
             <li class="u-i b-post" @mouseenter="isShowPostMenu = !isShowPostMenu" @mouseleave="isShowPostMenu = !isShowPostMenu">
-              <a class="i-link" href="/upload" target="_blank" >投稿</a>
+              <a class="i-link" href="/upload/home" target="_blank" >投稿</a>
               <PostMaterial v-show="isShowPostMenu"></PostMaterial>
             </li>
           </ul>
         </div>
       </div>
     </div>
+    <Success v-show="Suc" :content="successContent" v-on:close="sucClose"></Success>
+    <Error v-show="Err" :content="errorContent" v-on:close="close"></Error>
   </div>
 </template>
 
 <script>
+import Stomp from 'stompjs'
 import PostMaterial from './PostMaterial.vue'
+import Success from 'components/dialog/Success'
+import Error from 'components/dialog/Error'
 import { getToken, removeToken } from 'api/auth.js'
+import { loginApi } from 'api'
+import { Message } from 'element-ui'
 export default {
   inject: ['reload'],
   data() {
     return {
+      client: Stomp.client('ws://localhost:15674/ws'),
+      Suc: false,
+      successContent: '',
+      Err: false,
+      errorContent: '',
       qiniuAddress: this.Global,
       isShow: false,
       isShowPostMenu: false,
       isMessageShow: false,
       isHistoryShow: false,
       userInfo: this.UserInfo,
-      face: 'i-face'
+      face: 'i-face',
+      GetBack: false,
+      AttentionMe: false,
+      Likes: false,
+      SystemNot: false,
+      MyMessage: false,
+      route: '',
     }
   },
   components: {
-    PostMaterial
+    PostMaterial,
+    Success,
+    Error
   },
   methods: {
+    sucClose() {
+      this.Suc = false
+    },
+    close() {
+      this.Err = false
+    },
+    getRouter() {
+      let path = this.$route.fullPath
+      this.route = path.substring(1,path.lastIndexOf('/'))
+    },
     showPostMenu() {
       this.isShowPostMenu = !this.isShowPostMenu
     },
@@ -186,9 +228,80 @@ export default {
       this.$router.push({ path: '/register' })
     },
     logout() {
-      removeToken()
-      this.$router.push({ path: '/' })
-      this.reload()
+      loginApi.logout().then((response) => {
+        console.log(response)
+        if (response === 200) {
+          this.userInfo = ''
+          this.successContent = '注销成功'
+          this.Suc = true
+          location.reload()
+        } else {
+          Message.error('错误', response)
+        }
+      })
+    },
+    get(val) {
+      switch (val) {
+        case 'GetBack':
+          this.GetBack = false
+          break;
+        case 'AttentionMe':
+          this.AttentionMe = false
+          break;
+        case 'Likes':
+          this.Likes = false
+          break;
+        case 'SystemNot':
+          this.Likes = false
+          break;
+        case 'MyMessage':
+          this.MyMessage = false
+          break;
+      }
+    },
+    onConnected: function(frame) {
+		  //订阅频道
+      const topic = "/queue/queue_"+this.userInfo.iD;
+      this.client.subscribe(topic, this.responseCallback, this.onFailed);
+    },
+    onFailed: function(frame) {
+      console.log("MQ Failed: " + frame);
+    },
+    responseCallback: function(frame) {
+      //接收消息处理
+      switch (frame.body) {
+        case 'new comment':
+          this.GetBack = true
+          break;
+        case 'new attention':
+          this.AttentionMe = true
+          break;
+        case 'video like':
+          this.Likes = true
+          break;
+        case 'comment like':
+          this.Likes = true
+          break;
+      }
+    },
+    connect: function() {
+      //初始化mqtt客户端，并连接mqtt服务
+      const headers = {
+        login: 'guest',
+        passcode: 'guest',
+        host: "/"
+      };
+      this.client.connect(headers, this.onConnected, this.onFailed);
+    }
+  },
+  watch: {
+    '$route': 'getRouter'
+  },
+  mounted() {
+    this.getRouter()
+    this.userInfo = getToken() === undefined ? '' : JSON.parse(getToken())
+    if (getToken() !== undefined && this.userInfo !== '') {
+      this.connect()
     }
   }
 }
@@ -201,7 +314,6 @@ export default {
     z-index 10000
     .z_top
       background-color transparent
-      height 42px
       background #fff
       box-shadow rgba(0, 0, 0, 0.1) 0 1px 2px
       top 0px
@@ -238,7 +350,7 @@ export default {
           z-index 50
           background-position center 0!important
           background-repeat no-repeat
-          background-image: url('//i0.hdslb.com/bfs/archive/4f59bf959d51592016e07efe62969c411288826a.png')
+          background-image: url('../../assets/images/4f59bf959d51592016e07efe62969c411288826a.png')
         .b-header-mask
           position absolute
           top 0px
@@ -292,7 +404,7 @@ export default {
               text-align center
               line-height 42px
               position relative
-              list-style-stype: none
+              list-style-stype none
               a.i-link
                 height 100%
                 display block
@@ -437,6 +549,9 @@ export default {
                   .i-link:hover
                       background-color #888888
                     .i-frame-message
+                      box-shadow 0 2px 4px rgba(0,0,0,.16)
+                      border 1px solid #e5e9ef
+                      border-radius 0 0 4px 4px
                       left calc(50% - 86px)
                       position absolute
                       z-index 1
@@ -450,6 +565,7 @@ export default {
                         color black
                       .im-list:hover
                         color #00a1d6
+                        background #f1f3f7
                     .dd-bubble
                       position absolute
                       z-index 1

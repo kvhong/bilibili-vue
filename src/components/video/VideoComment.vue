@@ -22,7 +22,7 @@
                         </div>
                         <Comment :item="videoInfo" :commentType="'0'"></Comment>
                         <div class="comment-list">
-                            <VideoCommentItem v-for="item in comment" :key="item.id" :item="item" :videoId="videoId"></VideoCommentItem>
+                            <VideoCommentItem v-for="item in comment" :key="item.id" :item="item" :videoId="videoId" :authorId="videoInfo.author_id"></VideoCommentItem>
                         </div>
                     </div>
                 </div>

@@ -26,7 +26,7 @@
 
 <script>
 import BMenuItem from 'components/common/BMenuItem'
-import axios from 'axios'
+import { commonApi } from 'api'
 export default {
 	data() {
 		return {
@@ -39,8 +39,8 @@ export default {
 			const home = { id: 'home', partition_name: '首页', home: true }
 			const sequare = { id: 'sequare', partition_name: '广场', sequare: true }
 			const live = { id: 'live', partition_name: '直播', live: true }
-			axios.get('http://localhost:8500/home/getPartition').then(res => {
-				const list = res.data
+			commonApi.getPartition().then((response) => {
+				const list = response
 				this.classify.push(home)
 				for (let index = 0; index < list.length; index++) {
 					this.classify.push(list[index])

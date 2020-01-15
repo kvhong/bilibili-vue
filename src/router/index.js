@@ -4,6 +4,8 @@ import BParVideo from 'components/parVideo/BParVideo'
 import Home from 'components/home/index'
 import Login from 'components/login/index'
 import Register from 'components/register/index'
+import Search from 'components/search/index'
+import Content from 'components/search/Content'
 import History from 'components/history/index'
 import Message from 'components/message/index'
 import BVideo from 'components/video/index'
@@ -23,6 +25,31 @@ import VideoList from 'components/space/VideoList'
 import UnderReview from 'components/space/UnderReview'
 import DeletedVideo from 'components/space/DeletedVideo'
 import SpaceSetting from 'components/space/SpaceSetting'
+import SpaceCollect from 'components/space/SpaceCollect'
+import UploadHome from 'components/upload/UploadHome'
+import UploadVideo from 'components/upload/UploadVideo'
+import VideoManage from 'components/upload/VideoManage'
+import VideoEdit from 'components/upload/VideoEdit'
+import FansManage from 'components/upload/FansManage'
+import CommentManage from 'components/upload/CommentManage'
+import AppealManage from 'components/upload/AppealManage'
+import Follow from 'components/space/Follow'
+import Fans from 'components/space/Fans'
+import Attention from 'components/space/Attention'
+import Hot from 'components/hot/index'
+import GetBack from 'components/message/GetBack'
+import AttentionMe from 'components/message/AttentionMe'
+import Likes from 'components/message/Likes'
+import SystemNot from 'components/message/SystemNot'
+import MyMessage from 'components/message/MyMessage'
+import Other from 'components/ospace/Other'
+import OSpaceVideo from 'components/ospace/OSpaceVideo'
+import OSpaceHome from 'components/ospace/OSpaceHome'
+import OSpaceCollect from 'components/ospace/OSpaceCollect'
+import OFollow from 'components/ospace/OFollow'
+import OAttention from 'components/ospace/OAttention'
+import OFans from 'components/ospace/OFans'
+import Topic from 'components/banner/index'
 
 Vue.use(Router)
 
@@ -40,8 +67,28 @@ export default new Router({
             hidden: true
         },
         {
+            path: '/search',
+            component: Search,
+            hidden: true
+        },
+        {
+            path: '/search/index',
+            component: Content,
+            hidden: true
+        },
+        {
+            path: '/topic',
+            component: Topic,
+            hidden: true
+        },
+        {
             path: '/par/:name/:id',
             component: BParVideo,
+            hidden: true
+        },
+        {
+            path: '/hot',
+            component: Hot,
             hidden: true
         },
         {
@@ -62,7 +109,34 @@ export default new Router({
         {
             path: '/message',
             component: Message,
-            hidden: true
+            hidden: true,
+            children: [
+                {
+                    path: '/message/getBack',
+                    name: 'GetBack',
+                    component: GetBack
+                },
+                {
+                    path: '/message/attentionMe',
+                    name: 'AttentionMe',
+                    component: AttentionMe
+                },
+                {
+                    path: '/message/likes',
+                    name: 'Likes',
+                    component: Likes
+                },
+                {
+                    path: '/message/systemNot',
+                    name: 'SystemNot',
+                    component: SystemNot
+                },
+                {
+                    path: '/message/myMessage',
+                    name: 'MyMessage',
+                    component: MyMessage
+                }
+            ]
         },
         {
             path: '/center',
@@ -70,19 +144,19 @@ export default new Router({
             hidden: true,
             children: [  //二级路由
                 {
-                  path: '/center/info',
-                  name: 'Info',
-                  component: Info
+                    path: '/center/info',
+                    name: 'Info',
+                    component: Info
                 },
                 {
-                  path: '/center/updateInfo',
-                  name: 'UpdateInfo',
-                  component: UpdateInfo
+                    path: '/center/updateInfo',
+                    name: 'UpdateInfo',
+                    component: UpdateInfo
                 },
                 {
-                  path: '/center/headIcon',
-                  name: 'HeadIcon',
-                  component: HeadIcon
+                    path: '/center/headIcon',
+                    name: 'HeadIcon',
+                    component: HeadIcon
                 },
                 {
                     path: '/center/headIcon/upload',
@@ -143,13 +217,113 @@ export default new Router({
                     path: '/space/:id/setting',
                     name: 'SpaceSetting',
                     component: SpaceSetting
+                },
+                {
+                    path: '/space/:id/fav',
+                    name: 'SpaceCollect',
+                    component: SpaceCollect
+                },
+                {
+                    path: '/space/:id/follow',
+                    name: 'Follow',
+                    component: Follow,
+                    hidden: true,
+                    children: [
+                        {
+                            path: '/space/:id/follow/fans',
+                            name: 'Fans',
+                            component: Fans
+                        },
+                        {
+                            path: '/space/:id/follow/attention',
+                            name: 'Attention',
+                            component: Attention
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            path: '/ospace',
+            component: Other,
+            hidden: true,
+            children: [
+                {
+                    path: '/ospace/index',
+                    name: 'OSpaceHome',
+                    component: OSpaceHome
+                },
+                {
+                    path: '/ospace/video',
+                    name: 'OSpaceVideo',
+                    component: OSpaceVideo,
+                },
+                {
+                    path: '/ospace/fav',
+                    name: 'OSpaceCollect',
+                    component: OSpaceCollect
+                },
+                {
+                    path: '/ospace/follow',
+                    name: 'OFollow',
+                    component: OFollow,
+                    hidden: true,
+                    children: [
+                        {
+                            path: '/ospace/follow/fans',
+                            name: 'OFans',
+                            component: OFans
+                        },
+                        {
+                            path: '/ospace/follow/attention',
+                            name: 'OAttention',
+                            component: OAttention
+                        }
+                    ]
                 }
             ]
         },
         {
             path: '/upload',
             component: Upload,
-            hidden: true
+            hidden: true,
+            children: [
+                {
+                    path: '/upload/home',
+                    name: 'UploadHome',
+                    component: UploadHome
+                },
+                {
+                    path: '/upload/uploadVideo',
+                    name: 'UploadVideo',
+                    component: UploadVideo
+                },
+                {
+                    path: '/upload/videoManage',
+                    name: 'VideoManage',
+                    component: VideoManage
+                },
+                {
+                    path: '/upload/videoEdit',
+                    name: 'VideoEdit',
+                    component: VideoEdit
+                },
+                {
+                    path: '/upload/appealManage',
+                    name: 'AppealManage',
+                    component: AppealManage
+                },
+                {
+                    path: '/upload/fansManage',
+                    name: 'FansManage',
+                    component: FansManage
+                },
+                {
+                    path: '/upload/commentManage',
+                    name: 'CommentManage',
+                    component: CommentManage
+                }
+            ]
         }
     ]
 })

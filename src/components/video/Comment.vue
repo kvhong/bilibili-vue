@@ -1,7 +1,7 @@
 <template>
     <div class="comment-send">
         <div class="user-face">
-            <img class="user-head" :src="userInfo === undefined ? userInfoPicture : qiniuAddress+userInfo.picture">
+            <img class="user-head" :src="userInfo !== '' ? qiniuAddress+userInfo.picture : userInfoPicture">
         </div>
         <div class="textarea-container">
             <i class="ipt-arrow"></i>
@@ -53,7 +53,7 @@ export default {
     },
     methods: {
         toComment() {
-            if (this.userInfo === undefined) {
+            if (this.userInfo === '') {
                 alert('请先登录')
             } else {
                 videoApi.comment({ 

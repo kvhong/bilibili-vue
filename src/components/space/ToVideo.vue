@@ -1,17 +1,17 @@
 <template>
     <div class="section i-m">
         <div class="i-m-r1">
-            <a href="#" target="_blank" class="i-m-title">
+            <a href="/upload/home" target="_blank" class="i-m-title">
                 <span class="icon-i-title"></span>
                 <span class="icon-m-ra"></span>
             </a>
         </div>
         <div class="i-m-r2 clearfix">
-            <a href="#" target="_blank" class="i-m-btn i-m-upload">
+            <a href="/upload/uploadVideo" target="_blank" class="i-m-btn i-m-upload">
                 <span class="i-m-u-icon icon"></span>
                 <span class="i-m-text">视频投稿</span>
             </a>
-            <a href="#" target="_blank" class="i-m-btn i-m-v">
+            <a href="/upload/videoManage" target="_blank" class="i-m-btn i-m-v">
                 <span class="i-m-v-icon icon"></span>
                 <span class="i-m-text">内容管理</span>
             </a>

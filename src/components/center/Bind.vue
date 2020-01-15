@@ -17,10 +17,10 @@
                         <el-form ref="phoneFormOne" :model="phoneFormOne" :rules="phoneRulesOne" v-show="active === 0 && way === 'phone'">
                             <el-form-item prop="phone">
                                 <div class="el-input-group__prepend">原手机号</div>
-                                <input type="text" disabled="disabled" autocomplete="off" placeholder="请输入内容" class="el-input__inner" v-model="phoneFormOne.phone">
+                                <input type="text" disabled="disabled" autocomplete="off" placeholder="请输入内容" class="el-input__inner" v-model.number="phoneFormOne.phone">
                             </el-form-item>
                             <el-form-item prop="phoneCode">
-                                <input type="text" autocomplete="off" placeholder="请输入验证码" class="el-input__inner_1" v-model="phoneFormOne.phoneCode">
+                                <input type="text" autocomplete="off" placeholder="请输入验证码" class="el-input__inner_1" v-model.trim="phoneFormOne.phoneCode">
                                 <el-button plain style="float: right;width: 88px;padding-left: 9px;margin-top: 2px" @click="getPhoneCode">获取验证码</el-button>
                             </el-form-item>
                             <el-form-item>
@@ -30,10 +30,10 @@
                         <el-form ref="emailFormOne" :model="emailFormOne" :rules="emailRulesOne" v-show="active === 0 && way === 'email'">
                             <el-form-item prop="email">
                                 <div class="el-input-group__prepend">绑定邮箱</div>
-                                <input type="text" disabled="disabled" autocomplete="off" placeholder="请输入内容" class="el-input__inner" v-model="emailFormOne.email">
+                                <input type="text" disabled="disabled" autocomplete="off" placeholder="请输入内容" class="el-input__inner" v-model.number="emailFormOne.email">
                             </el-form-item>
                             <el-form-item prop="emailCode">
-                                <input type="text" autocomplete="off" placeholder="请输入验证码" class="el-input__inner_1" v-model="emailFormOne.emailCode">
+                                <input type="text" autocomplete="off" placeholder="请输入验证码" class="el-input__inner_1" v-model.trim="emailFormOne.emailCode">
                                 <el-button plain style="float: right;width: 88px;padding-left: 9px;margin-top: 2px" @click="getEmailCode">获取验证码</el-button>
                             </el-form-item>
                             <el-form-item>
@@ -42,10 +42,10 @@
                         </el-form>
                         <el-form ref="phoneFormTwo" :model="phoneFormTwo" :rules="phoneRulesTwo" v-show="active === 1 && bind === 'phone'">
                             <el-form-item prop="phone">
-                                <input type="text" disabled="disabled" autocomplete="off" placeholder="请输入手机号" class="el-input__inner_2" v-model="phoneFormTwo.phone">
+                                <input type="text" disabled="disabled" autocomplete="off" placeholder="请输入手机号" class="el-input__inner_2" v-model.number="phoneFormTwo.phone">
                             </el-form-item>
                             <el-form-item prop="phoneCode">
-                                <input type="text" autocomplete="off" placeholder="请输入验证码" class="el-input__inner_1" v-model="phoneFormTwo.phoneCode">
+                                <input type="text" autocomplete="off" placeholder="请输入验证码" class="el-input__inner_1" v-model.trim="phoneFormTwo.phoneCode">
                                 <el-button plain style="float: right;width: 88px;padding-left: 9px;margin-top: 2px" @click="getPhoneCode">获取验证码</el-button>
                             </el-form-item>
                             <el-form-item>
@@ -54,10 +54,10 @@
                         </el-form>
                         <el-form ref="emailFormTwo" :model="emailFormTwo" :rules="emailRulesTwo" v-show="active === 1 && bind === 'email'">
                             <el-form-item prop="email">
-                                <input type="text" disabled="disabled" autocomplete="off" placeholder="请输入邮箱地址" class="el-input__inner_2" v-model="emailFormTwo.email">
+                                <input type="text" disabled="disabled" autocomplete="off" placeholder="请输入邮箱地址" class="el-input__inner_2" v-model.trim="emailFormTwo.email">
                             </el-form-item>
                             <el-form-item prop="emailCode">
-                                <input type="text" autocomplete="off" placeholder="请输入验证码" class="el-input__inner_1" v-model="emailFormTwo.emailCode">
+                                <input type="text" autocomplete="off" placeholder="请输入验证码" class="el-input__inner_1" v-model.trim="emailFormTwo.emailCode">
                                 <el-button plain style="float: right;width: 88px;padding-left: 9px;margin-top: 2px" @click="getEmailCode">获取验证码</el-button>
                             </el-form-item>
                             <el-form-item>
@@ -67,15 +67,15 @@
                         <el-form ref="passwordForm" :model="passwordForm" :rules="passwordRules" v-show="active === 1 && bind === 'password'">
                             <el-form-item prop="nowCode">
                                 <div class="el-input-group__prepend">当前密码</div>
-                                <input type="text" disabled="disabled" autocomplete="off" placeholder="请输入内容" class="el-input__inner" v-model="passwordForm.nowCode">
+                                <input type="text" disabled="disabled" autocomplete="off" placeholder="请输入内容" class="el-input__inner" v-model.trim="passwordForm.nowCode">
                             </el-form-item>
                             <el-form-item prop="newCode">
                                 <div class="el-input-group__prepend">新的密码</div>
-                                <input type="text" disabled="disabled" autocomplete="off" placeholder="请输入内容" class="el-input__inner" v-model="passwordForm.newCode">
+                                <input type="text" disabled="disabled" autocomplete="off" placeholder="请输入内容" class="el-input__inner" v-model.trim="passwordForm.newCode">
                             </el-form-item>
                             <el-form-item prop="confirmCode">
                                 <div class="el-input-group__prepend">确认密码</div>
-                                <input type="text" disabled="disabled" autocomplete="off" placeholder="请输入内容" class="el-input__inner" v-model="passwordForm.confirmCode">
+                                <input type="text" disabled="disabled" autocomplete="off" placeholder="请输入内容" class="el-input__inner" v-model.trim="passwordForm.confirmCode">
                             </el-form-item>
                             <el-form-item>
                                 <el-button type="primary" class="next" @click="next('passwordForm', 'two')">下一步</el-button>
@@ -280,7 +280,7 @@ export default {
         '$route': 'getParams'
     },
     mounted() {
-        if (this.UserInfo !== undefined) {
+        if (this.UserInfo !== '') {
             const phone = this.UserInfo.phone
             const email = this.UserInfo.email
             this.phoneFormOne.realPhone = phone

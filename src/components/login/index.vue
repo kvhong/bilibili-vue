@@ -23,15 +23,15 @@
             <div class="login-right">
                 <el-form ref="loginForm" :model="form" :rules="rules" label-width="80px" class="login-form">
                     <el-form-item prop="username">
-                        <el-input type="text" placeholder="用户名" v-model="form.username" clearable/>
+                        <el-input type="text" placeholder="用户名" v-model.trim="form.username" clearable/>
                     </el-form-item>
                     <el-form-item prop="password">
-                        <el-input type="password" placeholder="密码" v-model="form.password"/>
+                        <el-input type="password" placeholder="密码" v-model.trim="form.password"/>
                     </el-form-item>
-                    <el-form-item prop="code">
-                        <el-input type="text" placeholder="验证码" v-model="form.code" style="width: 50%"/>
+                    <!-- <el-form-item prop="code">
+                        <el-input type="text" placeholder="验证码" v-model.trim="form.code" style="width: 50%"/>
                         <el-image :src="codeUrl" v-on:click="refresh"/>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item>
                         <el-button type="primary" v-on:click="onSubmit('loginForm')">登录</el-button>
                         <el-button type="button" v-on:click="onRegister">注册</el-button>
@@ -45,24 +45,37 @@
             和
             <a target="_blank" href="https://www.bilibili.com/blackboard/privacy-pc.html">隐私政策</a>
         </p>
+        <Loading v-show="loading" :content="'登录中'"></Loading>
+        <Success v-show="Suc" :content="successContent" v-on:close="sucClose"></Success>
+        <Error v-show="Err" :content="errorContent" v-on:close="close"></Error>
     </div>
 </template>
 
 <script>
 import TopContainer from 'components/common/TopContainer.vue'
 import TopBanner from 'components/common/TopBanner.vue'
+import Loading from 'components/dialog/Loading'
+import Success from 'components/dialog/Success'
+import Error from 'components/dialog/Error'
 import { loginApi } from 'api'
 import { Message } from 'element-ui'
 import { setToken } from 'api/auth'
 export default {
+    inject: ['reload'],
     data() {
         return {
-            codeUrl: 'http://localhost:8200/code/',
+            // codeUrl: 'http://localhost:8100/userInfo-server/code/',
             code: '',
             form: {
                 username: '',
                 password: ''
+                // code: ''
             },
+            loading: false,
+            Suc: false,
+            successContent: '登录成功',
+            Err: false,
+            errorContent: '',
             rules: {
                 username: [
                     {required: true, message: '用户名不可为空', trigger: 'blur'},
@@ -71,31 +84,45 @@ export default {
                 password: [
                     {required: true, message: '密码不可为空', trigger: 'blur'},
                     { min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur' }
-                ],
-                code: [
-                    {required: true, message: '验证码不可为空', trigger: 'blur'}
                 ]
+                // code: [
+                //     {required: true, message: '验证码不可为空', trigger: 'blur'}
+                // ]
             }
         }
     },
     components: {
         TopContainer,
-        TopBanner
+        TopBanner,
+        Loading,
+        Success,
+        Error
     },
     methods: {
         onSubmit(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
+                    this.loading = true
                     loginApi.login({ 'username': this.form.username, 'password': this.form.password }).then((response) => {
-                        if (response.code === '200') {
+                        console.log(response)
+                        this.loading = false
+                        if (response.data.code === '200') {
                             // 设置cookie
-                            setToken(response.userInfo)
-                            Message.success(response.message)
+                            this.Suc = true
+                            setToken(response.data.userInfo)
+                            // Message.success(response.data.message)
                             this.$router.push({path: '/'})
+                            this.Suc = false
+                            this.reload()
                         } else {
-                            Message.error(response.message)
+                            Message.error(response.data.message)
                             this.refresh()
                         }
+                    }).catch(() => {
+                        this.loading = false
+                        this.errorContent = '服务器错误'
+                        this.Err = true
+                        // Message.error('服务器错误')
                     })
                 } else {
                     return false;
@@ -107,6 +134,12 @@ export default {
         },
         refresh() {
             this.codeUrl = this.codeUrl+'?'+Math.random()
+        },
+        sucClose() {
+            this.Suc = false
+        },
+        close() {
+            this.Err = false
         }
     }
 }

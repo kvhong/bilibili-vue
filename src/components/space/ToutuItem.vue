@@ -13,12 +13,15 @@
 </template>
 
 <script>
-import { setToutuToken } from 'api/auth.js'
+import { spaceApi } from 'api'
+import { Message } from 'element-ui'
+import { setToken } from 'api/auth.js'
 export default {
     inject: ['reload'],
     data() {
         return {
-            qiniuAddress: this.Global
+            qiniuAddress: this.Global,
+            userInfo: this.UserInfo
         }
     },
     props: {
@@ -31,8 +34,16 @@ export default {
     },
     methods: {
         use() {
-            setToutuToken({ 'userId': this.userId, 'url': this.item.url })
-            this.reload()
+            spaceApi.updateToutu({ 'id': this.userInfo.iD, 'toutu': this.item.url }).then((response) => {
+                if (response === '') {
+                    Message.success('修改成功')
+                    this.userInfo.toutu = this.item.url
+                    setToken(this.userInfo)
+                    this.reload()
+                } else {
+                    Message.error('修改失败', response)
+                }
+            })
         }
     }
 }

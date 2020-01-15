@@ -5,13 +5,13 @@
         <div class="register-container">
             <el-form ref="registerForm" :model="form" :rules="rules" class="register-form">
                 <el-form-item prop="username">
-                    <el-input type="text" placeholder="用户名" v-model="form.username" clearable/>
+                    <el-input type="text" placeholder="用户名" v-model.trim="form.username" clearable/>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input type="password" placeholder="密码" v-model="form.password"/>
+                    <el-input type="password" placeholder="密码" v-model.trim="form.password"/>
                 </el-form-item>
                 <el-form-item prop="sure">
-                    <el-input type="password" placeholder="确认密码" v-model="form.sure"/>
+                    <el-input type="password" placeholder="确认密码" v-model.trim="form.sure"/>
                 </el-form-item>
                 <el-form-item prop="phone">
                     <el-select v-model="form.country" style="float: left;width: 30%">
@@ -22,14 +22,14 @@
                             :value="item.value">
                         </el-option>
                     </el-select>
-                    <el-input type="text" placeholder="手机号" v-model="form.phone" style="width: 70%;float: right"/>
+                    <el-input type="text" placeholder="手机号" v-model.number="form.phone" style="width: 70%;float: right"/>
                 </el-form-item>
                 <el-form-item prop="code">
-                    <el-input type="text" placeholder="短信验证码" v-model="form.code" style="width: 80%"/>
+                    <el-input type="text" placeholder="短信验证码" v-model.trim="form.code" style="width: 80%"/>
                     <el-button type="primary" v-on:click="getMessage" style="float: right">点击获取</el-button>
                 </el-form-item>
                 <el-form-item prop="email">
-                    <el-input type="email" placeholder="邮箱" v-model="form.email"/>
+                    <el-input type="email" placeholder="邮箱" v-model.trim="form.email"/>
                 </el-form-item>
                 <el-form-item>
                     <label class="register-agree" style="font-size: 8px;display: block;cursor: pointer;">
@@ -46,13 +46,18 @@
                 </el-form-item>
             </el-form>
         </div>
-        
+        <Loading v-show="loading" :content="'注册中'"></Loading>
+        <Success v-show="Suc" :content="successContent" v-on:close="sucClose"></Success>
+        <Error v-show="Err" :content="errorContent" v-on:close="close"></Error>
     </div>
 </template>
 
 <script>
 import TopContainer from 'components/common/TopContainer.vue'
 import TopBanner from 'components/common/TopBanner.vue'
+import Loading from 'components/dialog/Loading'
+import Success from 'components/dialog/Success'
+import Error from 'components/dialog/Error'
 import { commonApi, registerApi } from 'api'
 import { Message } from 'element-ui'
 export default {
@@ -97,6 +102,11 @@ export default {
             }
         }
         return {
+            loading: false,
+            Suc: false,
+            successContent: '',
+            Err: false,
+            errorContent: '',
             reg: /^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(17[013678])|(18[0,5-9]))\d{8}$/,
             disabled: true,
             phoneCode: '',
@@ -146,9 +156,18 @@ export default {
     },
     components: {
         TopContainer,
-        TopBanner
+        TopBanner,
+        Loading,
+        Success,
+        Error
     },
     methods: {
+        sucClose() {
+            this.Suc = false
+        },
+        close() {
+            this.Err = false
+        },
         change() {
             this.disabled = !this.disabled
         },
@@ -172,6 +191,7 @@ export default {
         onSubmit(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
+                    this.loading = true
                     registerApi.register({ 
                         'user_name': this.form.username,
                         'user_password': this.form.password,
@@ -179,8 +199,15 @@ export default {
                         'phone': this.form.phone,
                         'email': this.form.email
                         }).then((response) => {
-                            Message.success('注册成功')
+                            this.loading = false
+                            this.successContent = '注册成功'
+                            this.Suc = true
+                            // Message.success('注册成功')
                             this.$router.push({ path: '/login' })
+                    }).catch(() => {
+                        this.loading = false
+                        this.errorContent = '服务器错误'
+                        this.Err = true
                     })
                 } else {
                     return false;

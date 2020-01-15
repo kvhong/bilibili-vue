@@ -2,7 +2,7 @@
     <div>
         <TopContainer></TopContainer>
         <div class="top-banner">
-            <img src="../../assets/images/4f59bf959d51592016e07efe62969c411288826a.png" style="height: 86px;width: 100%;margin-top: -5px"/>
+            <img src="../../assets/images/4f59bf959d51592016e07efe62969c411288826a.png" style="height: 86px;width: 100%;"/>
         </div>
         <div class="security_content">
             <div data-v-35019306="" class="security-left">
@@ -70,7 +70,9 @@ export default {
     },
     methods: {
         getParam() {
-            this.isShow = this.$route.fullPath.split('/')[2]
+            let path = this.$route.fullPath
+            // .split('/')[2]
+            this.isShow = path.substring(path.lastIndexOf('/')+1)
         },
         to(toPath) {
             this.isShow = toPath

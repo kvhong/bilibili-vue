@@ -22,12 +22,47 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api': {
-          target: "http://localhost:8200",
-          changeOrigin: true,
-          pathRewrite: {
-            '^/api': ''
-          }
+      '/user-api': {
+        target: "http://118.31.102.1:8100/userInfo-server",
+        changeOrigin: true,
+        pathRewrite: {
+          '^/user-api': ''
+        }
+      },
+      '/home-api': {
+        target: "http://118.31.102.1:8100/home-server",
+        changeOrigin: true,
+        pathRewrite: {
+          '^/home-api': ''
+        }
+      },
+      '/video-api': {
+        target: "http://118.31.102.1:8100/videoInfo-server",
+        changeOrigin: true,
+        pathRewrite: {
+          '^/video-api': ''
+        }
+      },
+      '/personalVideo-api': {
+        target: "http://118.31.102.1:8100/personalVideo-server",
+        changeOrigin: true,
+        pathRewrite: {
+          '^/personalVideo-api': ''
+        }
+      },
+      '/label-api': {
+        target: "http://118.31.102.1:8100/label-server",
+        changeOrigin: true,
+        pathRewrite: {
+          '^/label-api': ''
+        }
+      },
+      '/collect-api': {
+        target: "http://118.31.102.1:8100/collect-server",
+        changeOrigin: true,
+        pathRewrite: {
+          '^/collect-api': ''
+        }
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"

@@ -5,19 +5,21 @@
             <div class="v-wrap" style="width: 988px; padding: 0px;">
                 <div class="l-con" style="width: 638px;">
                     <VideoInfo :item="videoInfo"></VideoInfo>
-                    <div id="playerWrap" class="player-wrap" style="height: auto;">
-                        <video controls preload="auto" width="100%" :src="qiniuAddress+videoInfo.video_url">
+                    <div id="playerWrap" class="player-wrap" style="height: auto;" name="playerWrap">
+                        <video controls preload="auto" width="100%" id="videoPlayer" :src="qiniuAddress+videoInfo.video_url">
                         </video>
                     </div>
                     <VideoToolbar :item="videoInfo"></VideoToolbar>
                     <VideoDesc :item="videoInfo"></VideoDesc>
                     <VideoTag :tag="tag.labels"></VideoTag>
-                    <VideoComment :videoInfo="videoInfo" :videoId="id"></VideoComment>
+                    <VideoComment :videoInfo="videoInfo" :videoId="id" id="comment" name="comment"></VideoComment>
                 </div>
-                <div class="r-con" @mouseenter="isShow = !isShow" @mouseleave="isShow = !isShow">
-                    <AuthorInfo :item="videoInfo.author"></AuthorInfo>
+                <div class="r-con">
+                    <div @mouseenter="isShow = !isShow" @mouseleave="isShow = !isShow">
+                        <AuthorInfo :item="videoInfo.author" :follow="follow"></AuthorInfo>
+                        <AuthorInfoTool v-on:listenAtt="changeAtt" v-show="isShow" :item="videoInfo.author" :videoInfo="true" :att="false"></AuthorInfoTool>
+                    </div>
                     <Relevant :relevant="relevant"></Relevant>
-                    <AuthorInfoTool v-show="isShow" :item="videoInfo.author"></AuthorInfoTool>
                 </div>
                 <GoTop></GoTop>
             </div>
@@ -36,7 +38,7 @@ import AuthorInfoTool from 'components/video/AuthorInfoTool.vue'
 import AuthorInfo from 'components/video/AuthorInfo.vue'
 import Relevant from 'components/video/Relevant.vue'
 import GoTop from 'components/nav/GoTop.vue'
-import { videoApi } from 'api'
+import { videoApi, commonApi } from 'api'
 export default {
     data() {
 		return {
@@ -45,7 +47,8 @@ export default {
             id: '',
             videoInfo: {},
             tag: {},
-            isShow: false
+            isShow: false,
+            follow: false
 		}
     },
     components: {
@@ -61,6 +64,9 @@ export default {
         GoTop
     },
     methods: {
+        changeAtt(val) {
+            this.follow = val
+        },
         getParams() {
             this.id = this.$route.params.id
             this.fetchData()
@@ -73,6 +79,7 @@ export default {
         getVideoInfo() {
             videoApi.videoInfo(this.id).then((response) => {
                 this.videoInfo = response
+                console.log(document.getElementById('videoPlayer').duration)
             })
         },
         getTag() {
@@ -84,13 +91,21 @@ export default {
             videoApi.relevant({ 'limit': '5', 'labels': this.tag.labels }).then((response) => {
                 this.relevant = response
             })
-        }
+        },
+        watch() {
+			commonApi.watch(this.id).then((response) => {
+				if (response !== '') {
+					Message.error('错误',response)
+				}
+			})
+		}
     },
     watch: {
       // 监测路由变化,只要变化了就调用获取路由参数方法将数据存储本组件即可
       '$route': 'getParams'
     },
     mounted() {
+        this.watch()
         this.getParams()
     }
 }

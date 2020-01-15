@@ -31,9 +31,9 @@ export default {
   data() {
     return {
       showMask: false,
-      timer1: '',
-      timer3: '',
-      timer7: '',
+      // timer1: '',
+      // timer3: '',
+      // timer7: '',
       isRouterAlive: true
     }
   },
@@ -41,21 +41,21 @@ export default {
     isShowMask() {
       this.showMask = !this.showMask
     },
-		updateRank() {
-			updateRankApi.updateRank('1').then((response) => {
-        console.log(response)
-      })
-		},
-		updateRank3() {
-      updateRankApi.updateRank('3').then((response) => {
-        console.log(response)
-      })
-		},
-		updateRank7() {
-      updateRankApi.updateRank('7').then((response) => {
-        console.log(response)
-      })
-    },
+		// updateRank() {
+		// 	updateRankApi.updateRank('1').then((response) => {
+    //     console.log(response)
+    //   })
+		// },
+		// updateRank3() {
+    //   updateRankApi.updateRank('3').then((response) => {
+    //     console.log(response)
+    //   })
+		// },
+		// updateRank7() {
+    //   updateRankApi.updateRank('7').then((response) => {
+    //     console.log(response)
+    //   })
+    // },
     reload() {
       this.isRouterAlive = false
 			this.$nextTick(function() {

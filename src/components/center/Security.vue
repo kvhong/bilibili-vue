@@ -76,7 +76,7 @@ export default {
         }
     },
     mounted() {
-        if (this.UserInfo !== undefined) {
+        if (this.UserInfo !== '') {
             this.haveEmail = this.UserInfo.email !== '' ? true : false
             this.havePhone = this.UserInfo.phone !== '' ? true : false
         }

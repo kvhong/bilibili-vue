@@ -9,7 +9,7 @@
 				<!-- 边框 -->
 				<div class="border"></div>
 				<!-- 背景图片 -->
-				<img v-lazy="item.pic">
+				<img :src="qiniuAddress+item.picture">
 				<!-- 内容预览 -->
 				<div class="back">
 					<div>	
@@ -24,13 +24,13 @@
 				</div>
 				<!-- 视频时间 -->
 				<div class="x">
-					<b class="x2">{{item.created_date}}</b>
+					<b class="x2">{{item.duration}}</b>
 				</div>
 			</a>
 					<!-- 下部分 -->
 			<a :href="hreflink" :title="item.video_title" target="_blank">
-				<div class="t">{{item.video_title}}</div>
-				<div class="i">
+				<div class="t" :class="collect ? 'active' : ''">{{item.video_title}}</div>
+				<div class="i" :class="collect ? 'unshow' : ''">
 					<span>
 						<i class="b-icon b-icon-v-play"></i>{{item.watches}}
 						</span><span>
@@ -39,20 +39,52 @@
 					</span>
 				</div>
 			</a>
+			<!-- 待测试 -->
+			<div class="meta pubdate" v-show="collect">
+				收藏于： {{item.collection_date}}
+				<el-popconfirm
+				title="确定取消收藏吗？" v-show="state">
+					<span class="icon delete" slot="reference" @click="cancelCollect" v-show="state"></span>
+				</el-popconfirm>
+			</div>
 		</div>
 	</li>
 </template>
 
 <script>
+import { spaceApi } from 'api'
+import { Message } from 'element-ui'
 export default {
+	data() {
+		return {
+			qiniuAddress: this.Global,
+			userInfo: this.UserInfo,
+			state: this.collect
+		}
+	},
 	props: {
 		item: {
 			type: Object
+		},
+		collect: {
+			type: Boolean
 		}
 	},
 	computed: {
 		hreflink() {
 			return '/video/' + this.item.id
+		}
+	},
+	methods: {
+		cancelCollect() {
+			spaceApi.cancelCollect({ 'userId': this.userInfo.iD, 'videoId': this.item.id }).then((response) => {
+				if (response === '') {
+					this.state = false
+					this.$emit('listenCancel',this.item.id)
+				} else {
+					Message.error('错误',response)
+				}
+			})
 		}
 	}
 }
@@ -65,7 +97,7 @@ export default {
 		.v
 			position relative
 			width 160px
-			height 148px
+			height 160px
 			font-size 12px
 			overflow hidden
 			transition all .3s linear
@@ -174,6 +206,8 @@ export default {
 				word-break break-all
 				overflow hidden
 				text-align left
+			.unshow
+				display none
 			.i
 				margin 0
 				font-size 12px
@@ -200,9 +234,38 @@ export default {
 							background-position -282px -90px
 						&.b-icon-v-dianzan
 							background-position -473px -665px
+			.meta.pubdate
+				font-size 12px
+				overflow hidden
+				text-overflow ellipsis
+			.meta
+				color #999
+				white-space nowrap
+				font-size 0
+				margin-top 6px
+				height 14px
+				line-height 14px
+				.delete:hover
+					background-position -409px -26px
+				.delete
+					background-position -345px -26px
+					cursor pointer
+					vertical-align middle
+					margin-left 8px
+					width 12px
+					height 14px
+				.icon
+					vertical-align middle
+					background-repeat no-repeat
+				.icon
+					display inline-block
+					background-image url('../../assets/images/icons1.png')
 			&:hover 
 				.t
-					height 40px
+					height 52px
+					color #00a1d6
+				.t.active
+					height 20px
 					color #00a1d6
 				.x
 					opacity 1

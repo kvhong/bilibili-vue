@@ -10,7 +10,7 @@
                             <span class="f-txt">该账号封禁中</span>
                         </div>
                     </div>
-                    <div class="h-inner" :style="'background-image: url('+qiniuAddress+toutu.url+');'">
+                    <div class="h-inner" :style="'background-image: url('+qiniuAddress+userInfo.toutu+');'">
                         <div class="h-gradient"></div>
                         <div class="h-user">
                             <div class="h-info clearfix">
@@ -51,23 +51,6 @@
                 </div>
             </div>
             <Navigator :userInfo="userInfo"></Navigator>
-            <el-dialog
-                title="个人信息举报"
-                :visible.sync="centerDialogVisible"
-                width="21%">
-                <div style="text-align: center;height: 90px">
-                    <p class="report-popup-tip" style="line-height: 18px;font-size: 12px;color: #99a2aa;text-align: left;padding: 0 0 20px 15px">举报内容（可多选）</p>
-                    <el-checkbox-group v-model="checkList" style="padding-left: 15px">
-                        <el-checkbox label="头像违规" style="float: left;padding-bottom: 20px"></el-checkbox>
-                        <el-checkbox label="昵称违规" style="float: left;padding-bottom: 20px"></el-checkbox>
-                        <el-checkbox label="签名违规" style="float: left;padding-bottom: 20px"></el-checkbox>
-                    </el-checkbox-group>
-                </div>
-                <span slot="footer" class="dialog-footer">
-                    <el-button @click="centerDialogVisible = false" size="small">取 消</el-button>
-                    <el-button type="primary" @click="centerDialogVisible = false" size="small">确 定</el-button>
-                </span>
-            </el-dialog>
         </div>
         <div>
             <router-view></router-view>
@@ -79,7 +62,6 @@
 import TopContainer from 'components/common/TopContainer.vue'
 import Navigator from 'components/space/Navigator.vue'
 import ToutuItem from 'components/space/ToutuItem.vue'
-import { getToutuToken, setToutuToken } from 'api/auth.js'
 export default {
     data() {
         return {
@@ -129,25 +111,13 @@ export default {
                     price: '免费',
                     url: 'image/toutu/f49642b3683a08e3190f29d5a095386451f8952c.jpg'
                 }
-            ],
-            toutu: ''
+            ]
         }
     },
     components: {
         TopContainer,
         Navigator,
         ToutuItem
-    },
-    mounted() {
-        if (getToutuToken() !== undefined) {
-            this.toutu = JSON.parse(getToutuToken())
-        } else {
-            this.toutu = {
-                'userId': this.userInfo.iD,
-                'url': 'image/toutu/44873d3568bdcb3d850d234e02a19602972450f1.png'
-            }
-            setToutuToken(this.toutu)
-        }
     }
 }
 </script>

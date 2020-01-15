@@ -16,13 +16,11 @@
                     <a :href="'/space/'+userInfo.iD+'/video/index'" class="n-btn n-video n-audio n-article n-album" :class="active === 'video' ? 'active' : ''">
                         <span class="iconfont icon-ic_video"></span>
                         <span class="n-text">投稿</span>
-                        <span class="n-num">0</span>
                     </a>
                     <!-- favlist -->
-                    <a :href="'/space/'+userInfo.iD+'/fav'" class="n-btn n-favlist" :class="active === 'favlist' ? 'active' : ''">
+                    <a :href="'/space/'+userInfo.iD+'/fav'" class="n-btn n-favlist" :class="active === 'fav' ? 'active' : ''">
                         <span class="iconfont icon-ic_collect"></span>
                         <span class="n-text">收藏</span>
-                        <span class="n-num">1</span>
                     </a>
                     <!-- subs -->
                     <a href="#" class="n-btn n-bangumi n-subs n-cinema" :class="active === 'subs' ? 'active' : ''">
@@ -40,14 +38,14 @@
                     <span class="icon search-btn"></span>
                 </div>
                 <div class="n-statistics">
-                    <a href="#" class="n-data n-gz" title="0">
+                    <a :href="'/space/'+userInfo.iD+'/follow/attention'" class="n-data n-gz" title="0">
                         <p class="n-data-k">关注数</p>
-                        <p id="n-gz" class="n-data-v space-attention">0</p>
+                        <p id="n-gz" class="n-data-v space-attention">{{userInfo.attention}}</p>
                     </a>
-                    <a href="#" class="n-data n-fs" title="0">
+                    <a :href="'/space/'+userInfo.iD+'/follow/fans'" class="n-data n-fs" title="0">
                         <p class="n-data-k">粉丝数</p>
-                        <p id="n-fs" class="n-data-v space-fans">0</p>
-                    </a><!----><!----><!---->
+                        <p id="n-fs" class="n-data-v space-fans">{{userInfo.fans}}</p>
+                    </a>
                 </div>
             </div>
         </div>
@@ -68,7 +66,9 @@ export default {
     },
     methods: {
         getParams() {
-            this.active = this.$route.fullPath.split('/')[3]
+            let path = this.$route.fullPath
+            // .split('/')[3]
+            this.active = path.substring(path.lastIndexOf('/')+1)
         }
     },
     watch: {

@@ -6,25 +6,27 @@
                     <div class="contribution-sidenav">
                         <div class="nav-container playlist-container">
                             <div class="contribution-list-container">
-                                <ul class="contribution-list">
-                                    <li class="contribution-item" :class="active === 'index' ? 'cur' : ''">
-                                        <a :href="'/space/'+userInfo.iD+'/video/index'" class="text">视频</a>
-                                        <span class="num">{{videoTotal}}</span>
-                                    </li>
-                                    <li class="contribution-item" :class="active === 'underReview' ? 'cur' : ''">
-                                        <a :href="'/space/'+userInfo.iD+'/video/underReview'" class="text">审核中</a>
-                                        <span class="num">{{underReviewTotal}}</span>
-                                    </li>
-                                    <li class="contribution-item" :class="active === 'deletedVideo' ? 'cur' : ''">
-                                        <a :href="'/space/'+userInfo.iD+'/video/deletedVideo'" class="text">已删除</a>
-                                        <span class="num">{{deletedTotal}}</span>
-                                    </li>
-                                </ul>
+                                <el-collapse v-model="activeNames" @change="handleChange">
+                                    <el-collapse-item title="分区" name="1">
+                                        <PartitionItem v-on:listenActive="getActive" v-for="item in parList" :item="item" :key="item.partition_name" ref="child"></PartitionItem>
+                                    </el-collapse-item>
+                                    <el-collapse-item title="排序" name="2">
+                                        <li class="contribution-item" :class="active === 'newCollect' ? 'cur' : ''" @click="click('newCollect')">
+                                            <a class="text">最近收藏</a>
+                                        </li>
+                                        <li class="contribution-item" :class="active === 'mostPlay' ? 'cur' : ''" @click="click('mostPlay')">
+                                            <a class="text">最多播放</a>
+                                        </li>
+                                        <li class="contribution-item" :class="active === 'newUpload' ? 'cur' : ''" @click="click('newUpload')">
+                                            <a class="text">最新投稿</a>
+                                        </li>
+                                    </el-collapse-item>
+                                </el-collapse>
                             </div>
                         </div>
                     </div>
                     <div class="main-content">
-                        <router-view></router-view>
+                        <CollectList :videoList="videoList" v-on:changePage="getData" :total="total"></CollectList>
                     </div>
                 </div>
             </div>
@@ -33,26 +35,105 @@
 </template>
 
 <script>
+import PartitionItem from 'components/space/PartitionItem'
+import CollectList from 'components/space/CollectList'
+import { spaceApi } from 'api'
 export default {
     data() {
         return {
             userInfo: this.UserInfo,
-            active: 'index'
+            active: 'newCollect',
+            activeNames: [],
+            filterList: [],
+            totalData: [],
+            parList: [
+            ],
+            videoList: [
+            ],
+            pageNum: 1,
+            pageSize: 10,
+            total: 0
         }
+    },
+    components: {
+        PartitionItem,
+        CollectList
     },
     methods: {
-        getParams() {
-            this.active = this.$route.fullPath.split('/')[4]
+        getData(val) {
+            this.pageNum = val.pageNum
+            this.pageSize = val.pageSize
+            this.getVideo(this.active)
         },
         getTotal() {
+            spaceApi.favTotal(this.userInfo.iD).then((response) => {
+                this.totalData = response
+            })
+        },
+        handleChange(val) {
             
+        },
+        click(val) {
+            this.active = val
+            this.getVideo(val)
+        },
+        getVideo(val) {
+            switch (val) {
+                case 'newCollect':
+                    this.getNewCollect()
+                    break;
+                case 'mostPlay':
+                    this.getMostPlay()
+                    break;
+                case 'newUpload':
+                    this.getNewUpload()
+                    break;
+            }
+        },
+        getNewCollect() {
+            spaceApi.spaceFav({ 'userId': this.userInfo.iD, 'pageNum': this.pageNum, 'pageSize': this.pageSize }).then((response) => {
+                this.videoList = response.list
+                this.total = response.total
+            })
+        },
+        getMostPlay() {
+            spaceApi.favMostPlay({ 'userId': this.userInfo.iD, 'pageNum': this.pageNum, 'pageSize': this.pageSize }).then((response) => {
+                this.videoList = response.list
+                this.total = response.total
+            })
+        },
+        getNewUpload() {
+            spaceApi.newUpload({ 'userId': this.userInfo.iD, 'pageNum': this.pageNum, 'pageSize': this.pageSize }).then((response) => {
+                this.videoList = response.list
+                this.total = response.total
+            })
+        },
+        getActive(val) {
+            let values = val.split(';')
+            if (values[0] === 'true') {
+                this.filterList.push(values[1])
+            } else {
+                this.filterList.splice(this.filterList.indexOf(values[1]), 1);
+            }
+            this.filter()
+        },
+        async filter() { 
+            if (this.filterList.length === 0) {
+                this.getVideo(this.active)
+                return
+            }
+            await this.getTotal()
+            this.videoList = []
+            this.totalData.forEach(element => {
+                if (this.filterList.indexOf(element.partition_name) !== -1) {
+                    this.videoList.push(element)
+                }
+            });
         }
     },
-    watch: {
-        '$route': 'getParams'
-    },
     mounted() {
-        this.getParams()
+        this.getTotal()
+        this.getVideo(this.active)
     }
 }
 </script>
@@ -87,10 +168,33 @@ export default {
     box-sizing: border-box;
 }
 .contribution-sidenav .contribution-list-container {
+    overflow: auto;
     position: relative;
     max-height: 420px;
-    margin: 10px 0 20px;
-    overflow: hidden;
+}
+.contribution-sidenav .contribution-list-container::-webkit-scrollbar {/*滚动条整体样式*/
+    right: 0px;
+    width: 6px;     /*高宽分别对应横竖滚动条的尺寸*/
+    height: 280px;
+}
+.contribution-sidenav .contribution-list-container::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    height: 101px;
+    background-color: #aaa;
+    border-radius: 6px;
+    position: absolute;
+    transition: background-color .2s linear,width .2s ease-in-out;
+    -webkit-transition: background-color .2s linear,width .2s ease-in-out;
+    width: 6px;
+    right: 2px;
+}
+.contribution-sidenav .contribution-list-container::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    display: block;
+    background-color: transparent;
+    width: 15px;
+    right: 0;
+    transition: background-color .2s linear,opacity .2s linear;
+    -webkit-transition: background-color .2s linear,opacity .2s linear;
+    position: absolute;
 }
 .contribution-sidenav .contribution-item.cur {
     background-color: #00a1d6;
@@ -102,6 +206,9 @@ export default {
     white-space: nowrap;
     font-size: 0;
     overflow: hidden;
+}
+.contribution-sidenav .contribution-item .text:hover {
+    color: #00a1d6
 }
 .contribution-sidenav .contribution-item.cur .num, .contribution-sidenav .contribution-item.cur .text {
     color: #fff;

@@ -17,7 +17,7 @@
                 {{item.video_title}}
             </a>
             <div class="count up">
-                <a href="#" target="_blank">{{item.author}}</a>
+                <a :href="'/ospace/index?id='+item.author_id" target="_blank">{{item.author}}</a>
             </div>
             <div class="count">                          
                 {{item.watches}}播放

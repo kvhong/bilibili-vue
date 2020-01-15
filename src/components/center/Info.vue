@@ -5,7 +5,7 @@
                 <span class="hide"></span> 
                 <div class="home-head">
                     <img :src="qiniuAddress+userInfo.picture"> 
-                    <a href="#" target="_blank" class="gotoSpace">个人空间</a>
+                    <a :href="'/space/'+userInfo.iD+'/index'" target="_blank" class="gotoSpace">个人空间</a>
                 </div> 
                 <div class="home-right">
                     <div class="home-top-msg">
@@ -14,7 +14,7 @@
                     <div class="home-top-level">
                         <span class="home-top-level-all">
                             <span class="home-to-update" @click="to">修改资料</span> 
-                            <a href="#" class="home-to-space">
+                            <a :href="'/space/'+userInfo.iD+'/index'" class="home-to-space">
                                 个人空间
                                 <i class="m-arrow"></i>
                             </a>

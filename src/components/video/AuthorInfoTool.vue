@@ -1,20 +1,20 @@
 <template>
-    <div class="user-card-m" style="left: 707.5px; top: 148px;">
+    <div class="user-card-m" :class="videoInfo ? 'video' : 'space'">
         <div>
-            <div class="bg"></div>
-            <a href="#" target="_blank" class="face">
+            <div class="bg" :style="'background-image: url('+qiniuAddress+item.toutu+');'"></div>
+            <a :href="'/ospace/index?id='+item.id" target="_blank" class="face">
                 <img :src="qiniuAddress+item.picture" width="50" height="50">
             </a>
             <div class="info">
                 <p class="user">
-                    <a target="_blank" href="#" class="name is-vip">{{item.nick_name}}</a>
+                    <a target="_blank" :href="'/ospace/index?id='+item.id" class="name is-vip">{{item.nick_name}}</a>
                 </p>
                 <p class="social">
-                    <a href="#" target="_blank">
+                    <a :href="'/ospace/follow/attention?id='+item.id" target="_blank">
                         关注: 
                         <span class="like">{{item.attention}}</span>
                     </a>
-                    <a href="#" target="_blank">
+                    <a :href="'/ospace/follow/fans?id='+item.id" target="_blank">
                         粉丝: 
                         <span class="fans">{{item.fans}}</span>
                     </a>
@@ -22,8 +22,11 @@
                 <p class="sign">{{item.profile}}</p>
             </div>
             <div class="btn-box">
-                <a class="like">
+                <a class="like" v-show="!follow">
                     <span class="default-text" @click="attention">+关注</span>
+                </a>
+                <a class="liked" v-show="follow">
+                    <span class="default-text">已关注</span>
                 </a>
             </div>
         </div>
@@ -32,34 +35,58 @@
 </template>
 
 <script>
-import { videoApi } from 'api'
+import { commonApi } from 'api'
 import { getToken } from 'api/auth.js'
 export default {
     data() {
         return {
             qiniuAddress: this.Global,
-            userInfo: this.UserInfo
+            userInfo: this.UserInfo,
+            follow: this.att ? true : this.state,
+            state: Boolean
         }
     },
     props: {
         item: {
             type: Object
+        },
+        videoInfo: {
+            type: Boolean
+        },
+        att: {
+            type: Boolean
+        }
+    },
+    watch: {
+        att() {
+            this.follow = this.att
         }
     },
     methods: {
         attention() {
-            if (this.userInfo === undefined) {
+            if (this.userInfo === '') {
                 alert('请先登录')
             } else {
-                videoApi.attention({ 'userId': this.userInfo.iD, 'attentionUserId': this.item.id }).then((response) => {
+                commonApi.attention({ 'userId': this.userInfo.iD, 'attentionUserId': this.item.id }).then((response) => {
                     console.log(response)
                     if (response === '') {
-
+                        this.state = true
+                        this.$emit('listenAtt', true)
                     } else {
                         
                     }
                 })
             }
+        },
+        attentionState() {
+            commonApi.attentionState({ 'userId': this.userInfo.iD, 'attentionUserId': this.item.id }).then((response) => {
+                this.state = response
+            })
+        }
+    },
+    mounted() {
+        if (!this.att) {
+            this.attentionState()
         }
     }
 }
@@ -78,6 +105,14 @@ export default {
     background: #fff;
     transition: all .3s;
 }
+.user-card-m.video {
+    left: 707.5px;
+    top: 148px;
+}
+.user-card-m.space {
+    left: -10px;
+    top: -40px
+}
 .user-card-m .bg {
     position: absolute;
     width: 375px;
@@ -86,7 +121,6 @@ export default {
     left: 0;
     border-radius: 4px 4px 0 0;
     overflow: hidden;
-    background: url('../../assets/images/768cc4fd97618cf589d23c2711a1d1a729f42235.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 50%;
@@ -143,6 +177,9 @@ export default {
 .user-card-m p {
     margin: 0;
 }
+.user-card-m .info .social a:hover {
+    color: #00a1d6;
+}
 .user-card-m .info .social a {
     color: #222;
 }
@@ -174,6 +211,12 @@ export default {
     font-weight: 400;
     border-color: #00a1d6;
     background-color: #00a1d6;
+}
+.user-card-m .btn-box .liked {
+    color: #6d757a;
+    cursor: text;
+    font-weight: 400;
+    background-color: #e5e9ef;
 }
 .user-card-m .btn-box a {
     display: inline-block;

@@ -2,36 +2,35 @@
 	<div class="search">
 		<el-form id="searchform" :model="searchInfo">
 			<el-form-item>
-				<input name="keyword" type="text" v-model="searchInfo.keyWord" class="search-keyword" id="search-keyword" autocomplete="off" accesskey="s" x-webkit-speech="" x-webkit-grammar="builtin:translate" placeholder="这样的历史剧才靠谱！" data-recommend="av8509845"/>
-				<el-button type="primary" class="search-submit" v-on:click="search"></el-button>
+				<input name="keyword" type="text" v-model.trim="searchInfo.keyWord" class="search-keyword" id="search-keyword" autocomplete="off" accesskey="s" x-webkit-speech="" x-webkit-grammar="builtin:translate" placeholder="搜索一下看看有什么！ "/>
+				<el-button type="primary" class="search-submit" @click="search"></el-button>
 			</el-form-item>
 		</el-form>
-		<a class="link-ranking" href="//www.bilibili.com/ranking" target="_blank">
+		<a class="link-ranking" href="/hot" target="_blank">
 			<span>排行榜</span>
 		</a>
 	</div>
 </template>
 <script>
-import axios from 'axios'
-	export default {
-		name: 'Search',
-		data() {
-			return {
-				searchInfo: {
-					keyWord: '',
-					pageNum: '1',
-					pageSize: '10'
-				}
+export default {
+	name: 'Search',
+	data() {
+		return {
+			searchInfo: {
+				keyWord: ''
 			}
-		},
-		methods: {
-			search() {
-				axios.post('http://localhost:8600/search/', this.searchInfo ).then(res => {
-					console.log(res.data)
-				})
+		}
+	},
+	methods: {
+		search() {
+			if (this.searchInfo.keyWord === '') {
+				window.open('/search','_blank')	
+			} else {
+				window.open('/search/index?keyWord='+this.searchInfo.keyWord,'_blank')
 			}
 		}
 	}
+}
 </script>
 
 <style lang="stylus" scoped>

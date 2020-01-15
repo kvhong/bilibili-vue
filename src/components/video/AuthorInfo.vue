@@ -1,13 +1,13 @@
 <template>
     <div id="v_upinfo" class="up-info report-wrap-module report-scroll-module" scrollshow="true">
         <div class="u-face">
-            <a href="#" target="_blank" report-id="head" class="fa">
+            <a :href="'/ospace/index?id='+item.id" target="_blank" report-id="head" class="fa">
                 <img :src="qiniuAddress+item.picture" width="48" height="48" class="up-face">
             </a>
         </div>
         <div class="u-info">
             <div class="name" style="line-height:20px;height:20px;">
-                <a href="#" target="_blank" report-id="name" class="username is-vip">
+                <a :href="'/ospace/index?id='+item.id" target="_blank" report-id="name" class="username is-vip">
                     {{item.nick_name}}
                 </a>
                 <!-- <a href="//message.bilibili.com/?spm_id_from=333.788.b_765f7570696e666f.3#whisper/mid252615184" target="_blank" class="message">
@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="btn-panel">
-            <div class="default-btn follow-btn b-gz not-follow">
+            <div class="default-btn follow-btn b-gz not-follow" v-show="!state">
                 <span class="has-charge" @click="attention">
                     <i class="van-icon-general_addto_s"></i>
                         关注 
@@ -29,40 +29,61 @@
                         </span>
                 </span>
             </div>
+            <div class="default-btn follow-btn b-gz follow" v-show="state">
+                <span class="has-charge">
+                        已关注 
+                </span>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
-import { videoApi } from 'api'
+import { commonApi } from 'api'
 import { getToken } from 'api/auth.js'
 export default {
     data() {
         return {
             qiniuAddress: this.Global,
-            userInfo: this.UserInfo
+            userInfo: this.UserInfo,
+            state: Boolean
         }
     },
     props: {
         item: {
             type: Object
+        },
+        follow: {
+            type: Boolean
+        }
+    },
+    watch: {
+        follow() {
+            this.state = this.follow
         }
     },
     methods: {
         attention() {
-            if (this.userInfo === undefined) {
+            if (this.userInfo === '') {
                 alert('请先登录')
             } else {
-                videoApi.attention({ 'userId': this.userInfo.iD, 'attentionUserId': this.item.id }).then((response) => {
-                    console.log(response)
-                    // if (response === '') {
-
-                    // } else {
+                commonApi.attention({ 'userId': this.userInfo.iD, 'attentionUserId': this.item.id }).then((response) => {
+                    if (response === '') {
+                        this.state = true
+                    } else {
                         
-                    // }
+                    }
                 })
             }
+        },
+        attentionState() {
+            commonApi.attentionState({ 'userId': this.userInfo.iD, 'attentionUserId': this.item.id }).then((response) => {
+                this.state = response
+            })
         }
+    },
+    mounted() {
+        this.attentionState()
     }
 }
 </script>
@@ -163,7 +184,11 @@ export default {
     color: #fff;
     width: 156px;
 }
-
+.up-info .btn-panel .follow {
+    background: #e5e9ef;
+    color: #6d757a;
+    width: 156px;
+}
 .up-info .btn-panel .follow-btn {
     transition: .25s;
 }

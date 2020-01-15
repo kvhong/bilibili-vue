@@ -1,7 +1,7 @@
 <template>
 	<div class="b-body">
 		<ul class="vidbox v-list">
-			<BRowItem v-for="item in row" :key="item.id" :item="item" v-if="isRouterAlive"></BRowItem>
+			<BRowItem v-for="item in row" :key="item.id" :item="item" v-if="isRouterAlive" :collect="false"></BRowItem>
 		</ul>
 	</div>
 </template>

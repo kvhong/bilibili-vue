@@ -56,8 +56,8 @@ import { contentrankApi } from 'api'
 export default {
 	data(){
 		return {
-			data: {},
-			rank: {},
+			data: [],
+			rank: [],
 			id: ''
 		}
 	},

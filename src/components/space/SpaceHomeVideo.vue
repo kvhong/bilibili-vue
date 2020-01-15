@@ -5,7 +5,7 @@
             <span class="count">{{videoNum}}</span>
             <div :class="video.length !== 0 ? 'sec-empty-hint-host' : 'sec-empty-hint'">
                 还没有上传过视频哦~
-                <a href="#" target="_blank">
+                <a href="/upload/uploadVideo" target="_blank">
                     立即上传
                 </a>
             </div>

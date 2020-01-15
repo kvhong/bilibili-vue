@@ -11,7 +11,7 @@
                         <label class="el-form-item__label">昵称:</label>
                         <div class="el-form-item__content">
                             <div class="el-input"><!----><!---->
-                                <input autocomplete="off" placeholder="你的昵称" type="text" rows="2" maxlength="16" validateevent="true" class="el-input__inner" v-model="info.nickName"><!----><!----></div> 
+                                <input autocomplete="off" placeholder="你的昵称" type="text" rows="2" maxlength="16" validateevent="true" class="el-input__inner" v-model.trim="info.nickName"><!----><!----></div> 
                             </div>
                         </div> 
                         <div class="el-form-item user-nick-rel-name">
@@ -24,7 +24,7 @@
                             <label class="el-form-item__label">我的签名:</label>
                             <div class="el-form-item__content">
                                 <div class="el-textarea">
-                                    <textarea placeholder="设置您的签名- ( ゜- ゜)つロ" type="textarea" rows="2" autocomplete="off" validateevent="true" class="el-textarea__inner" v-model="info.profile"></textarea>
+                                    <textarea placeholder="设置您的签名- ( ゜- ゜)つロ" type="textarea" rows="2" autocomplete="off" validateevent="true" class="el-textarea__inner" v-model.trim="info.profile"></textarea>
                                 </div>
                             </div>
                         </div> 
@@ -106,25 +106,27 @@ export default {
         }
     },
     methods: {
-        save() {
-            commonApi.nickNameIsExist(this.info.nickName).then((response) => {
-                if (response) {
+        async save() {
+            if (this.info.nickName !== this.userInfo.nick_name) {
+                var result = await commonApi.nickNameIsExist(this.info.nickName)
+                if (result) {
                     Message.error('昵称已存在')
+                    return;
+                }
+            }
+            centerApi.updateInfo({ 'id': this.userInfo.iD, 'nickName': this.info.nickName, 'profile': this.info.profile, 'sex': this.info.sex === '保密' ? '' : this.info.sex, 'birth': this.info.birth }).then((response) => {
+                if (response === '') {
+                    this.isShow = true
+                    this.userInfo.nick_name = this.info.nickName
+                    this.userInfo.profile = this.info.profile
+                    this.userInfo.sex = this.info.sex
+                    this.userInfo.birth = this.info.birth
+                    setToken(this.userInfo)
                 } else {
-                    centerApi.updateInfo({ 'id': this.userInfo.iD, 'nickName': this.info.nickName, 'profile': this.info.profile, 'sex': this.info.sex === '保密' ? '' : this.info.sex, 'birth': this.info.birth }).then((response) => {
-                        if (response === '') {
-                            this.isShow = true
-                            this.userInfo.nick_name = this.info.nickName
-                            this.userInfo.profile = this.info.profile
-                            this.userInfo.sex = this.info.sex
-                            this.userInfo.birth = this.info.birth
-                            setToken(this.userInfo)
-                        } else {
-                            Message.error('更新失败')
-                        }
-                    })
+                    Message.error('更新失败')
                 }
             })
+            
         },
         confirm() {
             this.isShow = false
@@ -135,7 +137,7 @@ export default {
         }
     },
     mounted() {
-        if (this.UserInfo !== undefined) {
+        if (this.UserInfo !== '') {
             this.info.nickName = this.UserInfo.nick_name
             this.info.profile = this.UserInfo.profile
             this.info.sex = this.UserInfo.sex === '' ? '保密' : this.UserInfo.sex
