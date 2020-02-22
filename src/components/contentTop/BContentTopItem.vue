@@ -1,15 +1,15 @@
 <template>
 	<li class="top-item">
 		<div class="v-item">
-			<a :href="'/video/'+contentTop.item" target="_blank" :title="contentTop.video_title">
+			<a :href="'/video/'+contentTop.id" target="_blank" :title="contentTop.video_title" @click="watch">
 				<div class="preview">
-					<img :src="contentTop.pic" :alt="contentTop.video_title">
+					<img :src="contentTop.picture==='' ? qiniuAddress+contentTop.video_url+'?vframe/png/offset/2' : qiniuAddress+contentTop.picture" :alt="contentTop.video_title">
 				</div>
 				<div class="mask">
 				</div>
 				<div class="info">
 					<div class="t">{{contentTop.video_title}}</div>
-					<p class="up">up主：{{contentTop.author}}</p>
+					<p class="up">作者：{{contentTop.author}}</p>
 					<p class="play">播放：{{contentTop.watches}}</p>
 				</div>
 			</a>
@@ -18,10 +18,21 @@
 </template>
 
 <script>
+import { commonApi } from 'api'
 export default {
+	data(){
+		return {
+			qiniuAddress: this.Global
+		}
+	},
 	props: {
 		contentTop: {
 			type: Object
+		}
+	},
+	methods: {
+		watch() {
+			commonApi.watch(this.contentTop.id)
 		}
 	}
 }

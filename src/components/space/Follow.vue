@@ -50,10 +50,8 @@ export default {
             this.active = path.substring(path.lastIndexOf('/')+1)
         },
         handleOpen(key, keyPath) {
-            console.log(key, keyPath);
         },
         handleClose(key, keyPath) {
-            console.log(key, keyPath);
         }
     },
     watch: {

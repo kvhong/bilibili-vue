@@ -5,12 +5,12 @@
 				<BMenuItem  v-for="i in classify" v-bind:key="i.id" :item="i"></BMenuItem>
 			</ul>
 			<div class="menu-r">
-				<a target="_blank" href="http://search.bilibili.com/all?keyword=%E8%B9%A6%E8%BF%AA" title="蹦迪" class="random-p">
+				<a target="_blank" href="/search/index?keyWord=后来的我们" title="后来的我们" class="random-p">
 					<div class="random-p-movie">
-						<img src="//i2.hdslb.com/bfs/active/84f323e3a77a6eafee656f832847603751f3857d.gif" alt="蹦迪">
+						<img src="//i2.hdslb.com/bfs/active/84f323e3a77a6eafee656f832847603751f3857d.gif" alt="后来的我们">
 					</div>
 				</a>
-				<a id="mobile_p" class="mobile-p" href="//app.bilibili.com" target="_blank" @mouseover="showMobileLink=true" @mouseout="showMobileLink=false">
+				<a id="mobile_p" class="mobile-p" href="" target="_blank" @mouseover="showMobileLink=true" @mouseout="showMobileLink=false">
 					<transition name="fade">
 						<div class="mobile-p-box" v-show="showMobileLink">
 							<div class="mobile-p-qrcode">

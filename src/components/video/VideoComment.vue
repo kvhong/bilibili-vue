@@ -70,12 +70,10 @@ export default {
         },
         handleSizeChange(val) {
             this.pageNum = val
-            console.log(this.pageNum)
             this.getComment()
         },
         handleCurrentChange(val) {
             this.pageNum = val
-            console.log(this.pageNum)
             this.getComment()
         }
     },

@@ -54,12 +54,10 @@ export default {
         },
         handleSizeChange(val) {
             this.pageNum = val
-            console.log(this.pageNum)
             this.fetchData()
         },
         handleCurrentChange(val) {
             this.pageNum = val
-            console.log(this.pageNum)
             this.fetchData()
         }
     },

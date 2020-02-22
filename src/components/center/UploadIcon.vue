@@ -19,7 +19,8 @@
                             accept="image/png,image/jpg,image/jpeg"
                             :show-file-list="false"
                             :auto-upload="false"
-                            :on-change="onUploadChange">
+                            :on-change="onUploadChange"
+                            :disabled="uploadDisabled">
                             <img v-if="imageUrl" :src="imageUrl" class="avatar">
                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                         </el-upload>
@@ -67,7 +68,8 @@ export default {
             file: '',
             picture: '',
             imageUrl: '',
-            disabled: true
+            disabled: true,
+            uploadDisabled: false
         }
     },
     components: {
@@ -83,80 +85,99 @@ export default {
             this.Err = false
         },
         submitUpload() {
-            this.loading = true
-            var uptoken
-            var policy = {}
-            var bucketName = 'clideo'
-            var AK = 'qHZmqay_XNi5EezMzE6b4VpcAp4x2RG1gm-6xmBK'
-            var SK = '0Y2B5IgtX1BQQYnxV-TO3gnJsx-668-KM1yHRbiB'
-            var deadline = Math.round(new Date().getTime() / 1000) + 3600
-            policy.scope = bucketName
-            policy.deadline = deadline
-            uptoken = genUpToken(AK, SK, policy)
-            var file = this.file //Blob 对象，上传的文件
-            var key = 'image/picture/'+this.picture
-            let config = {
-                useCdnDomain: true,
-                region: qiniu.region.z2
-            }
-            let putExtra = {
-                fname: this.picture,  //文件原文件名
-                params: {}, //用来放置自定义变量
-                mimeType: null  //用来限制上传文件类型，为 null 时表示不对文件类型限制；限制类型放到数组里： ["image/png", "image/jpeg", "image/gif"]
-            }
-            centerApi.updateIcon({ 'id': this.userInfo.iD, 'picture': 'image/picture/'+this.picture }).then((response) => {
-                // 文件上传
-                if (response === '') {
-                    var observable = qiniu.upload(file, key, uptoken, putExtra, config)
-                    observable.subscribe({
-                        next: (result) => {
-                        // 主要用来展示进度
-                            console.log(result)
-                        },
-                        error: (errResult) => {
-                        // 失败报错信息
-                            console.log(errResult)
-                        },
-                        complete: (result) => {
-                        // 接收成功后返回的信息
-                            this.loading = false
-                            this.successContent = '更新成功'
-                            this.Suc = true
-                            this.userInfo.picture = 'image/picture/'+this.picture
-                            setToken(this.userInfo)
-                            // Message.success('更新成功')
-                            this.$router.push({ path: '/center/headIcon'})
-                            this.reload()
-                        }
-                    })
-                } else {
-                    this.loading = false
-                    this.errorContent = '更新失败'
-                    this.Err = true
-                    // Message.error('更新失败')
+            if (!this.disabled) {
+                this.loading = true
+                var uptoken
+                var policy = {}
+                var bucketName = 'clideo'
+                var AK = 'qHZmqay_XNi5EezMzE6b4VpcAp4x2RG1gm-6xmBK'
+                var SK = '0Y2B5IgtX1BQQYnxV-TO3gnJsx-668-KM1yHRbiB'
+                var deadline = Math.round(new Date().getTime() / 1000) + 3600
+                policy.scope = bucketName
+                policy.deadline = deadline
+                uptoken = genUpToken(AK, SK, policy)
+                var file = this.file //Blob 对象，上传的文件
+                var key = 'image/picture/'+this.picture
+                let config = {
+                    useCdnDomain: true,
+                    region: qiniu.region.z2
                 }
-            }).catch(() => {
-                this.loading = false
-                this.errorContent = '服务器错误'
-                this.Err = true
-            })
+                let putExtra = {
+                    fname: this.picture,  //文件原文件名
+                    params: {}, //用来放置自定义变量
+                    mimeType: null  //用来限制上传文件类型，为 null 时表示不对文件类型限制；限制类型放到数组里： ["image/png", "image/jpeg", "image/gif"]
+                }
+                centerApi.updateIcon({ 'id': this.userInfo.iD, 'picture': 'image/picture/'+this.picture }).then((response) => {
+                    // 文件上传
+                    if (response === '') {
+                        var observable = qiniu.upload(file, key, uptoken, putExtra, config)
+                        observable.subscribe({
+                            next: (result) => {
+                            // 主要用来展示进度
+                                
+                            },
+                            error: (errResult) => {
+                            // 失败报错信息
+                                
+                            },
+                            complete: (result) => {
+                            // 接收成功后返回的信息
+                                this.loading = false
+                                this.successContent = '更新成功'
+                                this.Suc = true
+                                this.userInfo.picture = 'image/picture/'+this.picture
+                                setToken(this.userInfo)
+                                // Message.success('更新成功')
+                                this.$router.push({ path: '/center/headIcon'})
+                                this.reload()
+                            }
+                        })
+                    } else {
+                        this.loading = false
+                        this.errorContent = '更新失败'
+                        this.Err = true
+                        // Message.error('更新失败')
+                    }
+                }).catch(() => {
+                    this.loading = false
+                    this.errorContent = '服务器错误'
+                    this.Err = true
+                })
+            } else {
+                if (this.picture === '') {
+                    Message.error('请选择图片')
+                }
+            }
         },
         onUploadChange(file) {
-            const isIMAGE = (file.raw.type === 'image/jpeg' || file.raw.type === 'image/png'|| file.raw.type === 'image/jpg');
-            const isLt1M = file.size / 1024 / 1024 < 2;
+            if (!this.uploadDisabled) {
+                const isIMAGE = (file.raw.type === 'image/jpeg' || file.raw.type === 'image/png'|| file.raw.type === 'image/jpg');
+                const isLt1M = file.size / 1024 / 1024 < 2;
 
-            if (!isIMAGE) {
-                this.$message.error('上传文件只能是图片格式!');
-                return false;
+                if (!isIMAGE) {
+                    this.$message.error('上传文件只能是图片格式!');
+                    return false;
+                }
+                if (!isLt1M) {
+                    this.$message.error('上传文件大小不能超过 2MB!');
+                    return false;
+                }
+                this.imageUrl = URL.createObjectURL(file.raw);
+                this.file = file.raw
+                this.picture = file.uid + file.name.substring(file.name.lastIndexOf('.'))
+                this.disabled = false
+                this.timeout()
+            } else {
+                this.timeout()
+                Message.warning('请勿频繁操作，1分钟后再试！')
             }
-            if (!isLt1M) {
-                this.$message.error('上传文件大小不能超过 2MB!');
-                return false;
-            }
-            this.imageUrl = URL.createObjectURL(file.raw);
-            this.file = file.raw
-            this.picture = file.uid + file.name.substring(file.name.lastIndexOf('.'))
-            this.disabled = false
+            
+        },
+        timeout() {
+            this.uploadDisabled = true
+            setTimeout(() => {
+                this.uploadDisabled = false
+            }, 60000)
         }
     }
 }

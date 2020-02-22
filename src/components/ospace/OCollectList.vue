@@ -53,11 +53,9 @@ export default {
     methods: {
         handleSizeChange(val) {
             this.pageNum = val
-            console.log(this.pageNum)
         },
         handleCurrentChange(val) {
             this.pageNum = val
-            console.log(this.pageNum)
             this.$emit('changePage', { 'pageNum': this.pageNum, 'pageSize': this.pageSize })
         }
     }

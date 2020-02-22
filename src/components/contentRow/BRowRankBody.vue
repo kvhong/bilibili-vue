@@ -9,11 +9,11 @@
 						</i>
 						<div class="preview">
 						<!-- :alt="item.title" -->
-							<a :href="'/video/'+item.id" :title="item.video_title" target="_blank">
-								<img data-img="" :src="item.pic" loaded="loaded"  style="opacity: 1;">
+							<a :href="'/video/'+item.id" :title="item.video_title" target="_blank" @click="watch(item.id)">
+								<img :src="item.picture==='' ? qiniuAddress+item.video_url+'?vframe/png/offset/2' : qiniuAddress+item.picture" loaded="loaded"  style="opacity: 1;">
 								</a>
 						</div>
-						<a class="rl-info" :href="'/video/'+item.id" :title="item.video_title + item.pts" target="_blank">	
+						<a class="rl-info" :href="'/video/'+item.id" :title="item.video_title + item.pts" target="_blank" @click="watch(item.id)">	
 							<div class="title t">{{item.video_title}}
 							</div>
 							<div class="i">
@@ -52,10 +52,11 @@
 </template>
 
 <script>
-import { contentrankApi } from 'api'
+import { contentrankApi, commonApi } from 'api'
 export default {
 	data(){
 		return {
+			qiniuAddress: this.Global,
 			data: [],
 			rank: [],
 			id: ''
@@ -91,6 +92,9 @@ export default {
 				this.data = response
 				this.rank = this.data
 			})
+		},
+		watch(id) {
+			commonApi.watch(id)
 		}
 	}
 }

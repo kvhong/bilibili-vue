@@ -3,7 +3,7 @@
         <div class="card" :class="list.length <= 0 ? 'empty' : ''">
             <ul>
                 <li v-for="item in list" :key="item.id">
-                    <a :href="(item.comment_id === '' || item.comment_id === undefined) ? '/video/'+item.video_id+'#playerWrap' : '/video/'+item.video_id+'#'+item.comment_id" target="_blank" class="item">
+                    <a :href="(item.comment_id === '' || item.comment_id === undefined) ? '/video/'+item.video_id+'#playerWrap' : '/video/'+item.video_id+'#'+item.comment_id" target="_blank" class="item" @click="watch">
                         <div class="user-face">
                             <a :href="'/ospace/index?id='+item.author_id" target="_blank">
                                 <img :src="qiniuAddress+item.avatar" width="86" height="86" :alt="item.nick_name" :title="item.nick_name">
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { messageApi } from 'api'
+import { messageApi,commonApi } from 'api'
 export default {
     data() {
         return {
@@ -65,15 +65,16 @@ export default {
             })
         },
         handleSizeChange(val) {
-          this.pageNum = val
-          console.log(this.pageNum)
-          this.getData()
+            this.pageNum = val
+            this.getData()
         },
         handleCurrentChange(val) {
             this.pageNum = val
-            console.log(this.pageNum)
             this.getData()
-        }
+        },
+        watch() {
+			commonApi.watch(this.item.video_id)
+		}
     },
     mounted() {
         this.getData()

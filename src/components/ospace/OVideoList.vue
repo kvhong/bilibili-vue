@@ -88,6 +88,11 @@ export default {
     components: {
         BRowItem
     },
+    watch: {
+        userId() {
+            this.getVideo()
+        }
+    },
     methods: {
         getVideo() {
             spaceApi.spaceVideo({ 'userId': this.userId, 'pageNum': this.pageNum, 'pageSize': this.pageSize }).then((response) => {
@@ -123,7 +128,6 @@ export default {
         },
         handleSizeChange(val) {
             this.pageNum = val
-            console.log(this.pageNum)
             if (this.filter === 'new') {
                 this.getVideo()
             } else if (this.filter === 'mostPlay') {
@@ -134,7 +138,6 @@ export default {
         },
         handleCurrentChange(val) {
             this.pageNum = val
-            console.log(this.pageNum)
             if (this.filter === 'new') {
                 this.getVideo()
             } else if (this.filter === 'mostPlay') {

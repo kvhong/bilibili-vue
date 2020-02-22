@@ -3,14 +3,14 @@
         <div class="num">{{index}}</div>
         <div class="content">
             <div class="img">
-                <a :href="'/video/'+item.id" target="_blank">
+                <a :href="'/video/'+item.id" target="_blank" @click="watch">
                     <div class="lazy-img cover">
-                        <img :alt="item.video_title" :src="qiniuAddress+item.picture">
+                        <img :alt="item.video_title" :src="item.picture==='' ? qiniuAddress+item.video_url+'?vframe/png/offset/2' : qiniuAddress+item.picture">
                     </div>
                 </a>
             </div>
             <div class="info">
-                <a :href="'/video/'+item.id" target="_blank" class="title">{{item.video_title}}</a>
+                <a :href="'/video/'+item.id" target="_blank" class="title" @click="watch">{{item.video_title}}</a>
                 <div class="detail">
                     <span class="data-box">
                         <i class="b-icon play"></i>
@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import { commonApi } from 'api'
 export default {
     data() {
         return {
@@ -50,6 +51,11 @@ export default {
         index: {
             type: Number
         }
+    },
+    methods: {
+        watch() {
+			commonApi.watch(this.item.id)
+		}
     }
 }
 </script>

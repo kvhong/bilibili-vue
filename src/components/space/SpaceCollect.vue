@@ -37,7 +37,7 @@
 <script>
 import PartitionItem from 'components/space/PartitionItem'
 import CollectList from 'components/space/CollectList'
-import { spaceApi } from 'api'
+import { spaceApi, commonApi } from 'api'
 export default {
     data() {
         return {
@@ -76,6 +76,11 @@ export default {
         click(val) {
             this.active = val
             this.getVideo(val)
+        },
+        getPartition() {
+            commonApi.getPartition().then((response) => {
+                this.parList = response
+            })
         },
         getVideo(val) {
             switch (val) {
@@ -133,6 +138,7 @@ export default {
     },
     mounted() {
         this.getTotal()
+        this.getPartition()
         this.getVideo(this.active)
     }
 }

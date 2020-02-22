@@ -11,7 +11,8 @@
                                 v-model="collectSwitch"
                                 active-text="公开"
                                 inactive-text="隐藏"
-                                @change="switchChange('collect')">
+                                @change="switchChange('collect')"
+                                :disabled="disabled">
                             </el-switch>
                         </div>
                         <div name="user_info" class="setting-privacy-item">
@@ -20,7 +21,8 @@
                                 v-model="infoSwitch"
                                 active-text="公开"
                                 inactive-text="隐藏"
-                                @change="switchChange('info')">
+                                @change="switchChange('info')"
+                                :disabled="disabled">
                             </el-switch>
                         </div>
                     </div>
@@ -43,7 +45,7 @@
                             </div>
                             <div class="setting-add-tag">
                                 <el-input type="text" maxlength="10" class="length-check" size="small" v-model.trim="tag"></el-input>
-                                <span id="setting-new-tag-btn" @click="add">新增</span>
+                                <span id="setting-new-tag-btn" @click="add" :disabled="addDisabled">新增</span>
                             </div>
                         </div>
                     </div>
@@ -64,9 +66,9 @@ export default {
             collectSwitch: this.UserInfo.collect_state === 0 ? true : false,
             infoSwitch: this.UserInfo.info_state === 0 ? true : false,
             tag: '',
-            tags: [
-                
-            ]
+            tags: [],
+            disabled: false,
+            addDisabled: false
         }
     },
     methods: {
@@ -76,51 +78,74 @@ export default {
             })
         },
         switchChange(val) {
-            switch (val) {
-                case 'collect':
-                    let collectState = this.collectSwitch === true ? 0 : 1
-                    spaceApi.updateState({ 'id': this.userInfo.iD, 'collectState': collectState }).then((response) => {
-                        if (response === '') {
-                            this.userInfo.collect_state = collectState
-                            setToken(this.userInfo)
-                        } else {
-                            Message.error(response)
-                        }
-                    })
-                    break;
-                case 'info':
-                    let infoState = this.infoSwitch === true ? 0 : 1
-                    spaceApi.updateState({ 'id': this.userInfo.iD, 'infoState': infoState }).then((response) => {
-                        if (response === '') {
-                            this.userInfo.info_state = infoState
-                            setToken(this.userInfo)
-                        } else {
-                            Message.error(response)
-                        }
-                    })
-                    break;
+            if (!this.disabled) {
+                switch (val) {
+                    case 'collect':
+                        let collectState = this.collectSwitch === true ? 0 : 1
+                        spaceApi.updateState({ 'id': this.userInfo.iD, 'collectState': collectState }).then((response) => {
+                            if (response === '') {
+                                this.userInfo.collect_state = collectState
+                                setToken(this.userInfo)
+                                this.timeout()
+                            } else {
+                                Message.error(response)
+                            }
+                        })
+                        break;
+                    case 'info':
+                        let infoState = this.infoSwitch === true ? 0 : 1
+                        spaceApi.updateState({ 'id': this.userInfo.iD, 'infoState': infoState }).then((response) => {
+                            if (response === '') {
+                                this.userInfo.info_state = infoState
+                                setToken(this.userInfo)
+                                this.timeout()
+                            } else {
+                                Message.error(response)
+                            }
+                        })
+                        break;
+                }
+            } else {
+                this.timeout()
+                Message.warning('请勿频繁操作，10秒后再试！')
             }
         },
         add() {
-            this.tags.push(this.tag)
-            this.tag = ''
-            spaceApi.updateUserTag({ 'userId': this.userInfo.iD, 'labelId': this.tags }).then((response) => {
-                if (response === '') {
-                    Message.success('添加成功')
-                } else {
-                    Message.error('添加失败',response)
-                }
-            })
+            if (this.tags.length < 5) {
+                spaceApi.updateUserTag({ 'userId': this.userInfo.iD, 'labelId': this.tags }).then((response) => {
+                    if (response === '') {
+                        this.tags.push(this.tag)
+                        if (this.tags.length >= 5) {
+                            this.addDisabled = true
+                        }
+                        this.tag = ''
+                        Message.success('添加成功')
+                    } else {
+                        Message.error('添加失败',response)
+                    }
+                })
+            } else {
+                Message.warning('最多只能设置5个标签！')
+            }
         },
         handleClose(tag) {
-            this.tags.splice(this.tags.indexOf(tag), 1)
             spaceApi.updateUserTag({ 'userId': this.userInfo.iD, 'labelId': this.tags }).then((response) => {
                 if (response === '') {
+                    this.tags.splice(this.tags.indexOf(tag), 1)
+                    if (this.tags.length < 5) {
+                        this.addDisabled = false
+                    }
                     Message.success('删除成功')
                 } else {
                     Message.error('删除失败',response)
                 }
             })
+        },
+        timeout() {
+            this.disabled = true
+            setTimeout(() => {
+                this.disabled = false
+            }, 10000)
         }
     }
 }

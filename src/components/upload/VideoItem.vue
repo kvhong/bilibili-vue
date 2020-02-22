@@ -1,7 +1,7 @@
 <template>
     <li class="list-item">
-        <a class="pic" :href="'/video/'+item.id" target="_blank">
-            <img :src="qiniuAddress+item.picture">
+        <a class="pic" :href="'/video/'+item.id" target="_blank" @click="watch">
+            <img :src="item.picture === '' ? qiniuAddress+item.video_url+'?vframe/png/offset/2' : qiniuAddress+item.picture">
         </a>
         <div class="content">
             <div class="title">
@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import { videoApi, spaceApi, uploadApi } from 'api'
+import { videoApi, spaceApi, uploadApi, commonApi } from 'api'
 import { Message } from 'element-ui'
 export default {
     inject: ['reload'],
@@ -143,7 +143,10 @@ export default {
 			spaceApi.collectState({ 'userId': this.userInfo.iD, 'videoId': this.item.id }).then((response) => {
 				this.state = response
 			})
-        }
+        },
+        watch() {
+			commonApi.watch(this.item.id)
+		}
     },
     mounted() {
         this.getCollectState()

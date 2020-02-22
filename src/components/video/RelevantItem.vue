@@ -2,18 +2,18 @@
     <div class="card-box">
         <div class="pic-box">
             <div class="pic">
-                <a :href="'/video/'+item.id" target="_blank">
-                    <img :src="qiniuAddress" :alt="item.video_title" width="168" height="95">
+                <a :href="'/video/'+item.id" target="_blank" @click="watch">
+                    <img :src="item.picture === '' ? qiniuAddress+item.video_url+'?vframe/png/offset/2' : qiniuAddress+item.picture" :alt="item.video_title" width="168" height="95">
                 </a>
                 <span class="mask-video"></span>
-                <span class="duration">{{item.created_date}}</span><!-- 视频时间 -->
+                <span class="duration">{{item.duration}}</span><!-- 视频时间 -->
             </div>
             <div class="watch-later-video van-watchlater">
                 <span class="wl-tips" style="display:none;"></span>
             </div>
         </div>
         <div class="info">
-            <a :href="'/video/'+item.id" :title="item.video_title" class="title">
+            <a :href="'/video/'+item.id" :title="item.video_title" class="title" @click="watch">
                 {{item.video_title}}
             </a>
             <div class="count up">
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import { commonApi } from 'api'
 export default {
     data() {
         return {
@@ -37,6 +38,11 @@ export default {
         item: {
             type: Object
         }
+    },
+    methods: {
+        watch() {
+			commonApi.watch(this.item.id)
+		}
     }
 }
 </script>

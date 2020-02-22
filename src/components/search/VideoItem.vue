@@ -1,7 +1,7 @@
 <template>
     <li class="game-live-item">
         <a :href="'/video/'+item.id" class="video-info new-clickstat" target="_blank">
-            <img class="pic" :src="qiniuAddress+item.picture" :alt="item.video_title" :title="item.video_title">
+            <img class="pic" :src="item.picture === '' ? qiniuAddress+item.video_url+'?vframe/png/offset/2' : qiniuAddress+item.picture" :alt="item.video_title" :title="item.video_title">
             <div class="item-mask"></div>
             <i class="btn-link__hover_i"></i>
         </a>

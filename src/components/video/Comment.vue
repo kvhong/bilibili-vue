@@ -1,7 +1,7 @@
 <template>
     <div class="comment-send">
         <div class="user-face">
-            <img class="user-head" :src="userInfo !== '' ? qiniuAddress+userInfo.picture : userInfoPicture">
+            <img class="user-head" :src="userInfo !== '' ? qiniuAddress+userInfo.picture : qiniuAddress+userInfoPicture">
         </div>
         <div class="textarea-container">
             <i class="ipt-arrow"></i>
@@ -22,6 +22,7 @@
 <script>
 import { getToken } from 'api/auth.js'
 import { videoApi } from 'api'
+import { Message } from 'element-ui'
 export default {
     data() {
         return {
@@ -29,7 +30,7 @@ export default {
             disabled: getToken() === undefined ? true : false,
             qiniuAddress: this.Global,
             userInfo: this.UserInfo,
-            userInfoPicture: '../../assets/images/noface.gif',
+            userInfoPicture: 'noface.gif',
             form: {
                 content: ''
             },
@@ -53,24 +54,39 @@ export default {
     },
     methods: {
         toComment() {
-            if (this.userInfo === '') {
-                alert('请先登录')
+            if (!this.disabled) {
+                if (this.userInfo === '') {
+                    alert('请先登录')
+                } else {
+                    videoApi.comment({ 
+                        'videoId': this.item.id,
+                        'commentContent': this.form.content,
+                        'authorId': this.userInfo.iD,
+                        'sendId': this.item.author_id,
+                        'type': this.commentType
+                    }).then((response) => {
+                        if (response === '') {
+                            this.timeout()
+                            Message.success('评论成功')
+                        } else {
+                            Message.error('评论失败')
+                        }
+                    })
+                }
             } else {
-                videoApi.comment({ 
-                    'videoId': this.item.id,
-                    'commentContent': this.form.content,
-                    'authorId': this.userInfo.iD,
-                    'sendId': this.item.author_id,
-                    'type': this.commentType
-                }).then((response) => {
-                    console.log(response)
-                    if (response === '') {
-
-                    } else {
-                        
-                    }
-                })
+                if (this.userInfo === '') {
+                    alert('请先登录')
+                } else {
+                    this.timeout()
+                    Message.warning('请勿频繁操作，10秒后在试！')
+                }
             }
+        },
+        timeout() {
+            this.disabled = true
+            setTimeout(() => {
+                this.disabled = false
+            }, 10000)
         }
     }
 }

@@ -20,7 +20,7 @@
                 width="150"
                 trigger="hover">
                     <div class="i-frame-message">
-                        <a class="im-list" @click="cancelFollow">
+                        <a class="im-list" @click="cancelFollow" :disabled="cancelDisabled">
                             取消关注
                         </a>
                     </div>
@@ -29,7 +29,7 @@
                         <i class="el-icon-arrow-down"></i>
                     </div>
                 </el-popover>
-                <div class="no-follow" v-show="!follow" @click="toFollow">
+                <div class="no-follow" v-show="!follow" @click="toFollow" :disabled="followDisabled">
                     <span>+ 关注</span>
                 </div>
                 <el-popover
@@ -51,6 +51,7 @@
 <script>
 import AuthorInfoTool from 'components/video/AuthorInfoTool'
 import { commonApi } from 'api'
+import { Message } from 'element-ui'
 export default {
     data() {
         return {
@@ -58,7 +59,9 @@ export default {
             qiniuAddress: this.Global,
             follow: this.att ? true : this.state,
             isShow: false,
-            state: Boolean
+            state: Boolean,
+            cancelDisabled: false,
+            followDisabled: false
         }
     },
     props: {
@@ -82,22 +85,48 @@ export default {
             })
         },
         cancelFollow() {
-            commonApi.cancelAttention({ 'userId': this.userInfo.iD, 'attentionUserId': this.item.id }).then((response) => {
-                if (response === '') {
-                    this.follow = false
-                } else {
-
-                }
-            })
+            if (!this.cancelDisabled) {
+                commonApi.cancelAttention({ 'userId': this.userInfo.iD, 'attentionUserId': this.item.id }).then((response) => {
+                    if (response === '') {
+                        this.follow = false
+                        this.cancelTimeout()
+                        Message.success('取消关注成功')
+                    } else {
+                        Message.error('取消关注失败')
+                    }
+                })
+            } else {
+                this.cancelTimeout()
+                Message.warning('请勿频繁操作，10秒后再试！')
+            }
         },
         toFollow() {
-            commonApi.attention({ 'userId': this.userInfo.iD, 'attentionUserId': this.item.id }).then((response) => {
-                if (response === '') {
-                    this.follow = true
-                } else {
-
-                }
-            })
+            if (!this.followDisabled) {
+                commonApi.attention({ 'userId': this.userInfo.iD, 'attentionUserId': this.item.id }).then((response) => {
+                    if (response === '') {
+                        this.follow = true
+                        this.followTimeout()
+                        Message.success('关注成功')
+                    } else {
+                        Message.error('关注失败')
+                    }
+                })
+            } else {
+                this.followTimeout()
+                Message.warning('请勿频繁操作，10秒后再试！')
+            }
+        },
+        cancelTimeout() {
+            this.cancelDisabled = true
+            setTimeout(() => {
+                this.cancelDisabled = false
+            }, 10000)
+        },
+        followTimeout() {
+            this.followDisabled = true
+            setTimeout(() => {
+                this.followDisabled = false
+            }, 10000)
         }
     },
     mounted() {

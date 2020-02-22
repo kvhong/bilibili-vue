@@ -74,6 +74,7 @@ export default {
                     videoApi.commentPraise({ 'beLikedUserId': this.item.author_id, 'likeUserId': this.userInfo.iD, 'videoId': this.videoId, 'commentId': this.item.id }).then((response) => {
                         if (response === '') {
                             this.likeState = true
+                            this.item.comments = this.item.comments + 1
                             Message.success('点赞成功')
                         } else {
                             Message.error('错误',response)
@@ -86,6 +87,11 @@ export default {
             videoApi.likeState({ 'beLikedUserId': this.item.author_id, 'likeUserId': this.userInfo.iD, 'videoId': this.videoId, 'commentId': this.item.id }).then((response) => {
                 this.likeState = response
             })
+        }
+    },
+    watch: {
+        item() {
+            this.getLikeState()
         }
     },
     mounted() {

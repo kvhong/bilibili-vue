@@ -69,9 +69,7 @@ export default {
 			}
 		},
 		rows() {
-			console.log('rows 变化')
 			if (this.rows && this.rows.length > 0) {
-				console.log('rows存在:' + this.rows[0])
 				this.init()
 			}
 		}
@@ -107,7 +105,6 @@ export default {
 	},
 	mounted() {
 		if (!this.rows || this.rows.length === 0) {
-			console.log('rows不存在')
 			return
 		}
 		this.init()
@@ -134,7 +131,6 @@ export default {
 			this.data = Array.from(this.options.items, (item) => {
 				let element = document.getElementById(item.id)
 				if (!element) {
-					console.error(`can not find element of name is ${item.id}`)
 					return
 				}
 				let offsetTop = this.getOffsetTop(element)

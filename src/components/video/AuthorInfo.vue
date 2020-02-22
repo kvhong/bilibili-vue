@@ -19,9 +19,9 @@
                 {{item.profile}}
             </div>
         </div>
-        <div class="btn-panel">
+        <div class="btn-panel" v-show="userInfo.iD !== item.id">
             <div class="default-btn follow-btn b-gz not-follow" v-show="!state">
-                <span class="has-charge" @click="attention">
+                <span class="has-charge" @click="attention" :disabled="disabled">
                     <i class="van-icon-general_addto_s"></i>
                         关注 
                         <span>
@@ -41,12 +41,14 @@
 <script>
 import { commonApi } from 'api'
 import { getToken } from 'api/auth.js'
+import { Message } from 'element-ui'
 export default {
     data() {
         return {
             qiniuAddress: this.Global,
             userInfo: this.UserInfo,
-            state: Boolean
+            state: Boolean,
+            disabled: false
         }
     },
     props: {
@@ -60,36 +62,61 @@ export default {
     watch: {
         follow() {
             this.state = this.follow
+        },
+        item() {
+            if (this.userInfo !== '') {
+                this.attentionState()
+            }
         }
     },
     methods: {
         attention() {
-            if (this.userInfo === '') {
-                alert('请先登录')
+            if (!this.disabled) {
+                if (this.userInfo === '') {
+                    alert('请先登录')
+                } else {
+                    commonApi.attention({ 'userId': this.userInfo.iD, 'attentionUserId': this.item.id }).then((response) => {
+                        if (response === '') {
+                            this.state = true
+                            this.timeout()
+                            Message.success('关注成功')
+                        } else {
+                            Message.error('关注失败')
+                        }
+                    })
+                }
             } else {
-                commonApi.attention({ 'userId': this.userInfo.iD, 'attentionUserId': this.item.id }).then((response) => {
-                    if (response === '') {
-                        this.state = true
-                    } else {
-                        
-                    }
-                })
+                if (this.userInfo === '') {
+                    alert('请先登录')
+                } else {
+                    this.timeout()
+                    Message.warning('请勿频繁操作，10秒后再试！')
+                }
             }
         },
         attentionState() {
             commonApi.attentionState({ 'userId': this.userInfo.iD, 'attentionUserId': this.item.id }).then((response) => {
                 this.state = response
             })
+        },
+        timeout() {
+            this.disabled = true
+            setTimeout(() => {
+                this.disabled = false
+            }, 10000)
         }
     },
     mounted() {
-        this.attentionState()
+        if (this.userInfo !== '') {
+            this.attentionState()
+        }
     }
 }
 </script>
 
 <style scoped>
-.v-wrap .up-info, .v-wrap .video-info {
+.up-info {
+    height: 80px;
     margin-top: 30px;
     margin-bottom: 16px;
 }

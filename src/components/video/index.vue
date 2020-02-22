@@ -17,7 +17,7 @@
                 <div class="r-con">
                     <div @mouseenter="isShow = !isShow" @mouseleave="isShow = !isShow">
                         <AuthorInfo :item="videoInfo.author" :follow="follow"></AuthorInfo>
-                        <AuthorInfoTool v-on:listenAtt="changeAtt" v-show="isShow" :item="videoInfo.author" :videoInfo="true" :att="false"></AuthorInfoTool>
+                        <AuthorInfoTool v-on:listenAtt="changeAtt" v-show="isShow && videoInfo.author.id !== userInfo.iD" :item="videoInfo.author" :videoInfo="true" :att="false"></AuthorInfoTool>
                     </div>
                     <Relevant :relevant="relevant"></Relevant>
                 </div>
@@ -43,6 +43,7 @@ export default {
     data() {
 		return {
             qiniuAddress: this.Global,
+            userInfo: this.UserInfo,
             relevant: [],
             id: '',
             videoInfo: {},
@@ -79,7 +80,6 @@ export default {
         getVideoInfo() {
             videoApi.videoInfo(this.id).then((response) => {
                 this.videoInfo = response
-                console.log(document.getElementById('videoPlayer').duration)
             })
         },
         getTag() {
@@ -88,24 +88,16 @@ export default {
             })
         },
         getRelevant() {
-            videoApi.relevant({ 'limit': '5', 'labels': this.tag.labels }).then((response) => {
+            videoApi.relevant({ 'limit': 5, 'labels': this.tag.labels }).then((response) => {
                 this.relevant = response
             })
-        },
-        watch() {
-			commonApi.watch(this.id).then((response) => {
-				if (response !== '') {
-					Message.error('错误',response)
-				}
-			})
-		}
+        }
     },
     watch: {
       // 监测路由变化,只要变化了就调用获取路由参数方法将数据存储本组件即可
       '$route': 'getParams'
     },
-    mounted() {
-        this.watch()
+    created() {
         this.getParams()
     }
 }

@@ -260,15 +260,15 @@ export default {
                             pictureObservable.subscribe({
                                 next: (result) => {
                                 // 主要用来展示进度
-                                    console.log(result)
+                                    
                                 },
                                 error: (errResult) => {
                                 // 失败报错信息
-                                    console.log(errResult)
+                                    
                                 },
                                 complete: (result) => {
                                 // 接收成功后返回的信息
-                                    console.log(result)
+                                    
                                     pictureComplete = true
                                 }
                             })

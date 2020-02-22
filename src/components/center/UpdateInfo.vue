@@ -56,7 +56,7 @@
                         <div class="el-form-item__content">
                             <div class="padding-dom"></div> 
                             <div class="user-my-btn-warp">
-                                <button type="button" class="el-button el-button--primary" @click="save">
+                                <button type="button" class="el-button el-button--primary" @click="save" :disabled="disabled">
                                 <span>保存</span>
                                 </button>
                             </div>
@@ -102,30 +102,37 @@ export default {
                 profile: '',
                 sex: '',
                 birth: ''
-            }
+            },
+            disabled: false
         }
     },
     methods: {
         async save() {
-            if (this.info.nickName !== this.userInfo.nick_name) {
-                var result = await commonApi.nickNameIsExist(this.info.nickName)
-                if (result) {
-                    Message.error('昵称已存在')
-                    return;
+            if (!this.disabled) {
+                if (this.info.nickName !== this.userInfo.nick_name) {
+                    var result = await commonApi.nickNameIsExist(this.info.nickName)
+                    if (result) {
+                        Message.error('昵称已存在')
+                        return;
+                    }
                 }
+                centerApi.updateInfo({ 'id': this.userInfo.iD, 'nickName': this.info.nickName, 'profile': this.info.profile, 'sex': this.info.sex === '保密' ? '' : this.info.sex, 'birth': this.info.birth }).then((response) => {
+                    if (response === '') {
+                        this.isShow = true
+                        this.userInfo.nick_name = this.info.nickName
+                        this.userInfo.profile = this.info.profile
+                        this.userInfo.sex = this.info.sex
+                        this.userInfo.birth = this.info.birth
+                        setToken(this.userInfo)
+                        this.timeout()
+                    } else {
+                        Message.error('更新失败')
+                    }
+                })
+            } else {
+                this.timeout()
+                Message.warning('请勿频繁操作，10秒后再试！')
             }
-            centerApi.updateInfo({ 'id': this.userInfo.iD, 'nickName': this.info.nickName, 'profile': this.info.profile, 'sex': this.info.sex === '保密' ? '' : this.info.sex, 'birth': this.info.birth }).then((response) => {
-                if (response === '') {
-                    this.isShow = true
-                    this.userInfo.nick_name = this.info.nickName
-                    this.userInfo.profile = this.info.profile
-                    this.userInfo.sex = this.info.sex
-                    this.userInfo.birth = this.info.birth
-                    setToken(this.userInfo)
-                } else {
-                    Message.error('更新失败')
-                }
-            })
             
         },
         confirm() {
@@ -134,6 +141,12 @@ export default {
         },
         close() {
             this.isShow = false
+        },
+        timeout() {
+            this.disabled = true
+            setTimeout(() => {
+                this.disabled = false
+            }, 10000)
         }
     },
     mounted() {

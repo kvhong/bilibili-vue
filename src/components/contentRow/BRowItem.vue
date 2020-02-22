@@ -2,14 +2,14 @@
 	<li class="item-li">
 		<div class="v m300">
 			<!-- 上部分 -->
-			<a class="preview cover-preview" :href="hreflink" target="_blank">
+			<a class="preview cover-preview" :href="hreflink" target="_blank" @click="watch">
 				<!-- item 左上角的奖牌 -->
 				<div class="medal" v-show="false"></div>
 				<div class="original"></div>
 				<!-- 边框 -->
 				<div class="border"></div>
 				<!-- 背景图片 -->
-				<img :src="qiniuAddress+item.picture">
+				<img :src="item.picture === '' ? qiniuAddress+item.video_url+'?vframe/png/offset/2' : qiniuAddress+item.picture">
 				<!-- 内容预览 -->
 				<div class="back">
 					<div>	
@@ -28,7 +28,7 @@
 				</div>
 			</a>
 					<!-- 下部分 -->
-			<a :href="hreflink" :title="item.video_title" target="_blank">
+			<a :href="hreflink" :title="item.video_title" target="_blank" @click="watch">
 				<div class="t" :class="collect ? 'active' : ''">{{item.video_title}}</div>
 				<div class="i" :class="collect ? 'unshow' : ''">
 					<span>
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { spaceApi } from 'api'
+import { spaceApi, commonApi } from 'api'
 import { Message } from 'element-ui'
 export default {
 	data() {
@@ -85,6 +85,9 @@ export default {
 					Message.error('错误',response)
 				}
 			})
+		},
+		watch() {
+			commonApi.watch(this.item.id)
 		}
 	}
 }

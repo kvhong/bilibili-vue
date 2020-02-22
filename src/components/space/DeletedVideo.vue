@@ -78,12 +78,10 @@ export default {
         },
         handleSizeChange(val) {
             this.pageNum = val
-            console.log(this.pageNum)
             this.getVideo()
         },
         handleCurrentChange(val) {
             this.pageNum = val
-            console.log(this.pageNum)
             this.getVideo()
         }
     },

@@ -39,10 +39,10 @@ export default {
     },
     methods: {
         getParams() {
+            this.userId = this.$route.query.id
             let path = this.$route.fullPath
             // .split('/')[4]
             this.active = path.substring(path.lastIndexOf('/')+1,path.lastIndexOf('?'))
-            this.userId = this.$route.query.id
         },
         getTotal() {
             spaceApi.videoNum(this.userId).then((response) => {

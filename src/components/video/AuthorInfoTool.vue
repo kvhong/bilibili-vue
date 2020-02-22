@@ -23,7 +23,7 @@
             </div>
             <div class="btn-box">
                 <a class="like" v-show="!follow">
-                    <span class="default-text" @click="attention">+关注</span>
+                    <span class="default-text" @click="attention" :disabled="disabled">+关注</span>
                 </a>
                 <a class="liked" v-show="follow">
                     <span class="default-text">已关注</span>
@@ -37,13 +37,15 @@
 <script>
 import { commonApi } from 'api'
 import { getToken } from 'api/auth.js'
+import { Message } from 'element-ui'
 export default {
     data() {
         return {
             qiniuAddress: this.Global,
             userInfo: this.UserInfo,
             follow: this.att ? true : this.state,
-            state: Boolean
+            state: Boolean,
+            disabled: false
         }
     },
     props: {
@@ -64,24 +66,40 @@ export default {
     },
     methods: {
         attention() {
-            if (this.userInfo === '') {
-                alert('请先登录')
+            if (!this.disabled) {
+                if (this.userInfo === '') {
+                    alert('请先登录')
+                } else {
+                    commonApi.attention({ 'userId': this.userInfo.iD, 'attentionUserId': this.item.id }).then((response) => {
+                        if (response === '') {
+                            this.state = true
+                            this.timeout()
+                            Message.success('关注成功')
+                            this.$emit('listenAtt', true)
+                        } else {
+                            Message.error('关注失败')
+                        }
+                    })
+                }
             } else {
-                commonApi.attention({ 'userId': this.userInfo.iD, 'attentionUserId': this.item.id }).then((response) => {
-                    console.log(response)
-                    if (response === '') {
-                        this.state = true
-                        this.$emit('listenAtt', true)
-                    } else {
-                        
-                    }
-                })
+                if (this.userInfo === '') {
+                    alert('请先登录')
+                } else {
+                    this.timeout()
+                    Message.warning('请勿频繁操作，10秒后再试！')
+                }
             }
         },
         attentionState() {
             commonApi.attentionState({ 'userId': this.userInfo.iD, 'attentionUserId': this.item.id }).then((response) => {
                 this.state = response
             })
+        },
+        timeout() {
+            this.disabled = true
+            setTimeout(() => {
+                this.disabled = false
+            }, 10000)
         }
     },
     mounted() {

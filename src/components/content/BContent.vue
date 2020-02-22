@@ -11,13 +11,13 @@
 			</div>
 		</div>
 		<!-- 推广 -->
-		<div class="container-row">
+		<!-- <div class="container-row">
 			<BPromote></BPromote>
-		</div>
+		</div> -->
 		<!-- 直播 -->
-		<div class="container-row">
+		<!-- <div class="container-row">
 			<BLive></BLive>
-		</div>
+		</div> -->
 		<!-- 各分类具体内容 -->
 		<div class="container-row"  v-for="row in rows" :key="row.id" :id="row.id"> 
 			<BContentRow :category="row.partition_name" :categoryId="row.id" :row="row.item"></BContentRow>

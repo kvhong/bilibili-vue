@@ -51,10 +51,8 @@ export default {
             this.userId = this.$route.query.id
         },
         handleOpen(key, keyPath) {
-            console.log(key, keyPath);
         },
         handleClose(key, keyPath) {
-            console.log(key, keyPath);
         }
     },
     watch: {

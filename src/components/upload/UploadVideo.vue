@@ -90,7 +90,7 @@
                             </el-form-item>
                             <el-form-item label="分区" prop="partition">
                                 <br>
-                                <el-select v-model="form.partition" placeholder="请选择" style="margin: 10px 0 0 10px;">
+                                <el-select v-model="form.partition" placeholder="请选择" @change="changePar" style="margin: 10px 0 0 10px;">
                                     <el-option
                                     v-for="item in partitions"
                                     :key="item.id"
@@ -139,7 +139,7 @@
                                 </el-input>
                             </el-form-item>
                             <el-form-item>
-                                <el-button type="primary" style="margin: 10px 0 0 10px;" @click="submit('info')">投稿</el-button>
+                                <el-button type="primary" style="margin: 10px 0 0 10px;" @click="submit('info')" :disabled="disabled">投稿</el-button>
                                 <el-button @click="cancel">返回</el-button>
                             </el-form-item>
                         </el-form>
@@ -171,6 +171,7 @@ export default {
             }
         }
       return {
+        disabled: false,
         loading: false,
         Suc: false,
         successContent: '',
@@ -226,7 +227,6 @@ export default {
 			})
         },
         handleSelect(key, keyPath) {
-            console.log(key, keyPath);
         },
         onUploadChange(file) {
             const isIMAGE = file.raw.type === 'video/mp4'
@@ -260,23 +260,25 @@ export default {
                 }
                 document.getElementById('duration').innerHTML = hour + ':' + minute + ':' + second
             })
-            let video = document.createElement("video");
-            let source = document.createElement("source");
-            source.src = vurl
-            source.type = "video/mp4";
-            video.appendChild(source);
-            video.addEventListener("loadeddata", function() {
-                var canvas = document.createElement("canvas");
-                canvas.width = "320";
-                canvas.height = "320";
-                canvas
-                    .getContext("2d")
-                    .drawImage(video, 0, 0, canvas.width, canvas.width);
-                var img = document.createElement("img");
-                let imgsrc = canvas.toDataURL("image/png");
-                document.getElementById('pic-list').style.display = ''
-                document.getElementById('select-ai-covers').src = imgsrc
-            });
+            this.$nextTick(() => {
+                let video = document.createElement("video");
+                let source = document.createElement("source");
+                source.src = vurl
+                source.type = "video/mp4";
+                video.appendChild(source);
+                video.addEventListener("loadeddata", function() {
+                    var canvas = document.createElement("canvas");
+                    canvas.width = "320";
+                    canvas.height = "320";
+                    canvas
+                        .getContext("2d")
+                        .drawImage(video, 0, 0, canvas.width, canvas.width);
+                    let imgsrc = canvas.toDataURL("image/png");
+                    document.getElementById('pic-list').style.display = ''
+                    document.getElementById('select-ai-covers').src = imgsrc
+                })
+            })
+            
             this.url = file.uid + file.name.substring(file.name.lastIndexOf('.'))
             this.form.title = file.name.substring(0,file.name.lastIndexOf('.'))
             this.editShow = true
@@ -286,7 +288,6 @@ export default {
             this.pictureFile = this.dataURLtoFile(this.imageUrl,'image/png')
             this.form.pic = Number(Math.random()*Math.pow(10,13)).toFixed(0)+'.png'
             document.getElementById('pic-list').style.display = 'none'
-            console.log(this.pictureFile)
         },
         dataURLtoFile(dataURI, type) {
             let binary = atob(dataURI.split(',')[1]);
@@ -314,7 +315,17 @@ export default {
             document.getElementById('pic-list').style.display = ''
         },
         handleChange(value) {
-            console.log(value);
+        },
+        changePar(value) {
+            var par
+            this.partitions.forEach(element => {
+                if (element.id === value) {
+                    par = element.partition_name
+                    return
+                }
+            });
+            var title = this.form.title
+            this.form.title = '【'+par+'】' + title.substring(title.indexOf('】')+1)
         },
         handleClose(tag) {
             this.form.tags.splice(this.form.tags.indexOf(tag), 1);
@@ -338,73 +349,104 @@ export default {
         submit(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    // 弹出框提示正在上传，上传完成后结束
-                    this.loading = true
-                    this.form.duration = document.getElementById('duration').innerHTML
-                    var uptoken
-                    var policy = {}
-                    var bucketName = 'clideo'
-                    var AK = 'qHZmqay_XNi5EezMzE6b4VpcAp4x2RG1gm-6xmBK'
-                    var SK = '0Y2B5IgtX1BQQYnxV-TO3gnJsx-668-KM1yHRbiB'
-                    var deadline = Math.round(new Date().getTime() / 1000) + 3600
-                    policy.scope = bucketName
-                    policy.deadline = deadline
-                    uptoken = genUpToken(AK, SK, policy)
-                    var videoFile = this.videoFile //Blob 对象，上传的文件
-                    var videoKey = 'video/'+this.url
-                    var pictureFile = this.pictureFile
-                    var pictureKey = 'image/videoPic/'+this.form.pic
-                    let config = {
-                        useCdnDomain: true,
-                        region: qiniu.region.z2
-                    }
-                    let videoPutExtra = {
-                        fname: this.url,  //文件原文件名
-                        params: {}, //用来放置自定义变量
-                        mimeType: null  //用来限制上传文件类型，为 null 时表示不对文件类型限制；限制类型放到数组里： ["image/png", "image/jpeg", "image/gif"]
-                    }
-                    let picturePutExtra = {
-                        fname: this.form.pic,  //文件原文件名
-                        params: {}, //用来放置自定义变量
-                        mimeType: null  //用来限制上传文件类型，为 null 时表示不对文件类型限制；限制类型放到数组里： ["image/png", "image/jpeg", "image/gif"]
-                    }
-                    var videoComplete = false;
-                    var pictureComplete = false;
-                    uploadApi.uploadVideo({ 'title': this.form.title, 'describe': this.form.profile, 'authorId':  this.userInfo.iD, 'url': 'video/'+this.url, 'partitionId': this.form.partition, 'picture': 'image/videoPic/'+this.form.pic, 'label': this.form.tags, 'duration': this.form.duration }).then((response) => {
-                        if (response === '') {
-                            var videoObservable = qiniu.upload(videoFile, videoKey, uptoken, videoPutExtra, config)
-                            var pictureObservable = qiniu.upload(pictureFile, pictureKey, uptoken, picturePutExtra, config)
-                            videoObservable.subscribe({
-                                next: (result) => {
-                                // 主要用来展示进度
-                                    // console.log(result)
-                                },
-                                error: (errResult) => {
-                                // 失败报错信息
-                                    // console.log(errResult)
-                                },
-                                complete: (result) => {
-                                // 接收成功后返回的信息
-                                    // console.log(result)
-                                    videoComplete = true
-                                    pictureObservable.subscribe({
-                                        next: (result) => {
-                                        // 主要用来展示进度
-                                            // console.log(result)
-                                        },
-                                        error: (errResult) => {
-                                        // 失败报错信息
-                                            // console.log(errResult)
-                                        },
-                                        complete: (result) => {
-                                        // 接收成功后返回的信息
-                                            // console.log(result)
-                                            pictureComplete = true
+                    if (!this.disabled) {
+                        // 弹出框提示正在上传，上传完成后结束
+                        this.loading = true
+                        this.form.duration = document.getElementById('duration').innerHTML
+                        var uptoken
+                        var policy = {}
+                        var bucketName = 'clideo'
+                        var AK = 'qHZmqay_XNi5EezMzE6b4VpcAp4x2RG1gm-6xmBK'
+                        var SK = '0Y2B5IgtX1BQQYnxV-TO3gnJsx-668-KM1yHRbiB'
+                        var deadline = Math.round(new Date().getTime() / 1000) + 3600
+                        policy.scope = bucketName
+                        policy.deadline = deadline
+                        uptoken = genUpToken(AK, SK, policy)
+                        var videoFile = this.videoFile //Blob 对象，上传的文件
+                        var videoKey = 'video/'+this.url
+                        var pictureFile = this.pictureFile
+                        var pictureKey
+                        let picturePutExtra
+                        if (this.form.pic !== '') {
+                            pictureKey = 'image/videoPic/'+this.form.pic
+                            picturePutExtra = {
+                                fname: this.form.pic,  //文件原文件名
+                                params: {}, //用来放置自定义变量
+                                mimeType: null  //用来限制上传文件类型，为 null 时表示不对文件类型限制；限制类型放到数组里： ["image/png", "image/jpeg", "image/gif"]
+                            }
+                        }
+                        let config = {
+                            useCdnDomain: true,
+                            region: qiniu.region.z2
+                        }
+                        let videoPutExtra = {
+                            fname: this.url,  //文件原文件名
+                            params: {}, //用来放置自定义变量
+                            mimeType: null  //用来限制上传文件类型，为 null 时表示不对文件类型限制；限制类型放到数组里： ["image/png", "image/jpeg", "image/gif"]
+                        }
+                        var videoComplete = false;
+                        var pictureComplete = false;
+                        uploadApi.uploadVideo({ 'title': this.form.title, 'describe': this.form.profile, 'authorId':  this.userInfo.iD, 'url': 'video/'+this.url, 'partitionId': this.form.partition, 'picture': this.form.pic === '' ? '' : 'image/videoPic/'+this.form.pic, 'label': this.form.tags, 'duration': this.form.duration }).then((response) => {
+                            if (response === '') {
+                                var videoObservable = qiniu.upload(videoFile, videoKey, uptoken, videoPutExtra, config)
+                                var pictureObservable
+                                if (this.form.pic !== '') {
+                                    pictureObservable = qiniu.upload(pictureFile, pictureKey, uptoken, picturePutExtra, config)
+                                }
+                                videoObservable.subscribe({
+                                    next: (result) => {
+                                    // 主要用来展示进度
+                                        // console.log(result)
+                                    },
+                                    error: (errResult) => {
+                                    // 失败报错信息
+                                        // console.log(errResult)
+                                    },
+                                    complete: (result) => {
+                                    // 接收成功后返回的信息
+                                        // console.log(result)
+                                        videoComplete = true
+                                        if (this.form.pic !== '') {
+                                            pictureObservable.subscribe({
+                                                next: (result) => {
+                                                // 主要用来展示进度
+                                                    // console.log(result)
+                                                },
+                                                error: (errResult) => {
+                                                // 失败报错信息
+                                                    // console.log(errResult)
+                                                },
+                                                complete: (result) => {
+                                                // 接收成功后返回的信息
+                                                    // console.log(result)
+                                                    pictureComplete = true
+                                                    this.loading = false
+                                                    if (videoComplete&&pictureComplete){
+                                                        this.successContent = '上传成功'
+                                                        this.Suc = true
+                                                        this.timeout()
+                                                        // Message.success('上传成功')
+                                                        this.cancel()
+                                                    } else {
+                                                        uploadApi.deleteVideo({ 'videoId': this.videoInfo.id, 'userId': this.userInfo.iD }).then((response) => {
+                                                            if (response === '') {
+                                                                this.errorContent = '上传失败'
+                                                                this.Err = true
+                                                                // Message.error('上传失败')
+                                                            } else {
+                                                                Message.error('错误',response)
+                                                            }
+                                                        })
+                                                    }
+                                                }
+                                            })
+                                        } else {
                                             this.loading = false
-                                            if (videoComplete&&pictureComplete){
+                                            if (videoComplete){
                                                 this.successContent = '上传成功'
                                                 this.Suc = true
                                                 // Message.success('上传成功')
+                                                this.timeout()
                                                 this.cancel()
                                             } else {
                                                 uploadApi.deleteVideo({ 'videoId': this.videoInfo.id, 'userId': this.userInfo.iD }).then((response) => {
@@ -418,17 +460,21 @@ export default {
                                                 })
                                             }
                                         }
-                                    })
-                                }
-                            })
-                        } else {
-                            Message.error('上传失败',response)
-                        }
-                    }).catch(() => {
-                        this.loading = false
-                        this.errorContent = '服务器错误'
-                        this.Err = true
-                    })
+                                        
+                                    }
+                                })
+                            } else {
+                                Message.error('上传失败',response)
+                            }
+                        }).catch(() => {
+                            this.loading = false
+                            this.errorContent = '服务器错误'
+                            this.Err = true
+                        })
+                    } else {
+                        this.timeout()
+                        Message.warning('请勿频繁操作，5分钟后再试！')
+                    }
                 } else {
                     return false
                 }
@@ -445,6 +491,12 @@ export default {
             }
             this.editShow = false
             this.imageUrl = ''
+        },
+        timeout() {
+            this.disabled = true
+            setTimeout(() => {
+                this.disabled = false
+            }, 300000)
         }
     },
     mounted() {

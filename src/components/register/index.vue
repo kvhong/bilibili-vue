@@ -85,7 +85,13 @@ export default {
         }
         const checkPhone = (rule, value, callback) => {
             if (this.reg.test(value)) {
-                callback()
+                commonApi.phoneIsExist(value).then((response) => {
+                    if (response) {
+                        return callback(new Error('手机号已存在'))
+                    } else {
+                        callback()
+                    }
+                })
             } else {
                 return callback(new Error('请输入正确的手机号'))
             }
@@ -100,6 +106,15 @@ export default {
                     return callback(new Error('短信验证码错误'))
                 }
             }
+        }
+        const checkEmail = (rule, value, callback) => {
+            commonApi.emailIsExist(value).then((response) => {
+                if (response) {
+                    return callback(new Error('邮箱已存在'))
+                } else {
+                    callback()
+                }
+            })
         }
         return {
             loading: false,
@@ -141,7 +156,7 @@ export default {
                 phone: [
                     {required: true, message: '手机号不可为空', trigger: 'blur'},
                     { min: 11, max: 11, message: '长度必须是 11 个字符', trigger: 'blur' },
-                    { validator: checkPhone, trigger: ['blur', 'change'] }
+                    { validator: checkPhone, trigger: 'blur' }
                 ],
                 code: [
                     {required: true, message: '验证码不可为空', trigger: 'blur'},
@@ -149,7 +164,8 @@ export default {
                 ],
                 email: [
                     { required: true, message: '邮箱不可为空', trigger: 'blur' },
-                    { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+                    { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] },
+                    { validator: checkEmail, trigger: 'blur' }
                 ]
             }
         }

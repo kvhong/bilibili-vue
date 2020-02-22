@@ -59,7 +59,7 @@ import Success from 'components/dialog/Success'
 import Error from 'components/dialog/Error'
 import { loginApi } from 'api'
 import { Message } from 'element-ui'
-import { setToken } from 'api/auth'
+import { setToken, setAuthToken } from 'api/auth'
 export default {
     inject: ['reload'],
     data() {
@@ -104,12 +104,12 @@ export default {
                 if (valid) {
                     this.loading = true
                     loginApi.login({ 'username': this.form.username, 'password': this.form.password }).then((response) => {
-                        console.log(response)
                         this.loading = false
                         if (response.data.code === '200') {
                             // 设置cookie
                             this.Suc = true
                             setToken(response.data.userInfo)
+                            setAuthToken(response.data.Authorization)
                             // Message.success(response.data.message)
                             this.$router.push({path: '/'})
                             this.Suc = false
@@ -225,6 +225,7 @@ export default {
     margin: 24px auto 0;
     padding-left: 50px;
     width: 980px;
+    height: 360px;
     font-family: PingFangSC-Regular;
     font-size: 12px;
     color: #99a2aa;

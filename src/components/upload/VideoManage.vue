@@ -133,7 +133,6 @@ export default {
         })
       },
       handleSelect(key, keyPath) {
-        console.log(key, keyPath);
       },
       async handleClick(tab, event) {
         await this.getData()
@@ -155,7 +154,6 @@ export default {
       },
       handleSizeChange(val) {
           this.pageNum = val
-          console.log(this.pageNum)
           if (this.allSearchList.length <= 0) {
             this.getData()
           } else {
@@ -166,7 +164,6 @@ export default {
       },
       handleCurrentChange(val) {
           this.pageNum = val
-          console.log(this.pageNum)
           if (this.allSearchList.length <= 0) {
             this.getData()
           } else {

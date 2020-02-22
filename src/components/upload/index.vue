@@ -161,7 +161,7 @@ import { Message } from 'element-ui'
 export default {
     data() {
       return {
-        client: Stomp.client('ws://localhost:15674/ws'),
+        client: Stomp.client('ws://118.31.102.1:15674/ws'),
         qiniuAddress: this.Global,
         userInfo: this.UserInfo,
         activeIndex: 'home',
@@ -188,10 +188,10 @@ export default {
             })
         },
         handleOpen(key, keyPath) {
-            console.log(key, keyPath);
+            
         },
         handleClose(key, keyPath) {
-            console.log(key, keyPath);
+            
         },
         errorHandler() {
             return true
@@ -218,11 +218,9 @@ export default {
         onConnected: function(frame) {
 		  //订阅频道
             const topic = "/queue/queue_"+this.userInfo.iD;
-            console.log(topic)
 	        this.client.subscribe(topic, this.responseCallback, this.onFailed);
 	    },
 	    onFailed: function(frame) {
-	        console.log("MQ Failed: " + frame);
 	    },
 	    responseCallback: function(frame) {
             alert(frame.body)
@@ -244,7 +242,6 @@ export default {
 	    },
 	    connect: function() {
         //初始化mqtt客户端，并连接mqtt服务
-            console.log('MQ start')
             const headers = {
                 login: 'guest',
                 passcode: 'guest',

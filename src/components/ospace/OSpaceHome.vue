@@ -51,18 +51,18 @@ export default {
             })
         },
         getVideo() {
-            spaceApi.spaceVideo({ 'userId': this.userInfo.id, 'pageNum': 1, 'pageSize': 3 }).then((response) => {
+            spaceApi.spaceVideo({ 'userId': this.userId, 'pageNum': 1, 'pageSize': 3 }).then((response) => {
                 this.video = response.list
             })
-            spaceApi.videoNum(this.userInfo.id).then((response) => {
+            spaceApi.videoNum(this.userId).then((response) => {
                 this.videoNum = response
             })
         },
         getFav() {
-            spaceApi.spaceFav({ 'userId': this.userInfo.id, 'pageNum': 1, 'pageSize': 3 }).then((response) => {
+            spaceApi.spaceFav({ 'userId': this.userId, 'pageNum': 1, 'pageSize': 3 }).then((response) => {
                 this.fav = response.list
             })
-            spaceApi.favNum(this.userInfo.id).then((response) => {
+            spaceApi.favNum(this.userId).then((response) => {
                 this.favNum = response
             })
         }

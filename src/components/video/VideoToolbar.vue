@@ -7,7 +7,7 @@
                     <i class="van-icon-videodetails_like" :class="likeState ? 'active' : ''"></i>
                     {{item.comments}}
                 </span>
-                <span :title="'收藏人数'+item.collections" class="collect" @click="collect">
+                <span :title="'收藏人数'+item.collections" class="collect" @click="collect" :disabled="disabled">
                     <canvas width="34" height="34" class="ring-progress" style="width:34px;height:34px;left:-3px;top:-3px;"></canvas>
                     <i class="van-icon-videodetails_collect" :class="state ? 'active' : ''"></i>
                     {{item.collections}}
@@ -29,8 +29,9 @@ export default {
     data() {
         return {
             userInfo: this.UserInfo,
-            state: Boolean,
-            likeState: Boolean
+            state: false,
+            likeState: false,
+            disabled: false
         }
     },
     props: {
@@ -47,6 +48,7 @@ export default {
                     videoApi.videoPraise({ 'beLikedUserId': this.item.author_id, 'likeUserId': this.userInfo.iD, 'videoId': this.item.id }).then((response) => {
                         if (response === '') {
                             this.likeState = true
+                            this.item.comments = this.item.comments + 1
                             Message.success('点赞成功')
                         } else {
                             Message.error('错误',response)
@@ -58,28 +60,41 @@ export default {
             }
         },
         collect() {
-            if (!this.state) {
-                if (this.userInfo === '') {
-                    alert('请先登录')
+            if (!this.disabled) {
+                if (!this.state) {
+                    if (this.userInfo === '') {
+                        alert('请先登录')
+                    } else {
+                        videoApi.videoCollect({ 'userId': this.userInfo.iD, 'videoId': this.item.id }).then((response) => {
+                            if (response === '') {
+                                this.state = true
+                                this.item.collections = this.item.collections + 1
+                                this.timeout()
+                                Message.success('收藏成功')
+                            } else {
+                                Message.error('错误',response)
+                            }
+                        })
+                    }
                 } else {
-                    videoApi.videoCollect({ 'userId': this.userInfo.iD, 'videoId': this.item.id }).then((response) => {
+                    spaceApi.cancelCollect({ 'userId': this.userInfo.iD, 'videoId': this.item.id }).then((response) => {
                         if (response === '') {
-                            this.state = true
-                            Message.success('收藏成功')
+                            this.state = false
+                            this.item.collections = this.item.collections - 1
+                            this.timeout()
                         } else {
                             Message.error('错误',response)
                         }
                     })
                 }
             } else {
-                spaceApi.cancelCollect({ 'userId': this.userInfo.iD, 'videoId': this.item.id }).then((response) => {
-                    if (response === '') {
-                        this.state = false
-                    } else {
-                        Message.error('错误',response)
-                    }
-                })
+                this.timeout()
+                Message.warning('请勿频繁操作，10秒后再试！')
             }
+        },
+        getState() {
+            this.getCollectState()
+            this.getLikeState()
         },
         getCollectState() {
 			spaceApi.collectState({ 'userId': this.userInfo.iD, 'videoId': this.item.id }).then((response) => {
@@ -90,11 +105,25 @@ export default {
             videoApi.likeState({ 'beLikedUserId': this.item.author_id, 'likeUserId': this.userInfo.iD, 'videoId': this.item.id }).then((response) => {
                 this.likeState = response
             })
+        },
+        timeout() {
+            this.disabled = true
+            setTimeout(() => {
+                this.disabled = false
+            }, 10000)
         }
     },
-    mounted() {
-        this.getCollectState()
-        this.getLikeState()
+    watch: {
+        item() {
+            if (this.userInfo !== '') {
+                this.getState()
+            }
+        }
+    },
+    created() {
+        if (this.userInfo !== '') {
+            this.getState()
+        }
     }
 }
 </script>

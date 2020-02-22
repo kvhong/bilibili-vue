@@ -5,7 +5,7 @@
         width="600"
         trigger="click">
             <div class="comment-content" :class="item.commentList.length <= 0 ? 'empty' : ''">
-                <a :href="'/video/'+item.videoInfo.id" target="_blank" class="to">
+                <a :href="'/video/'+item.videoInfo.id" target="_blank" class="to" @click="watch">
                     <span>去评论</span>
                 </a>
                 <div class="nodata" v-show="item.commentList.length <= 0">
@@ -45,6 +45,7 @@
 
 <script>
 import CommentItem from 'components/upload/CommentItem'
+import { commonApi } from 'api'
 export default {
     props: {
         item: {
@@ -53,6 +54,11 @@ export default {
     },
     components: {
         CommentItem
+    },
+    methods: {
+        watch() {
+			commonApi.watch(this.item.videoInfo.id)
+		}
     }
 }
 </script>

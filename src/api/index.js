@@ -1,5 +1,6 @@
 import * as url from './urlConfig'
 import axios from 'axios'
+import { getAuthToken } from 'api/auth'
 // import { response } from 'express'
 
 export const commonApi = {
@@ -8,18 +9,33 @@ export const commonApi = {
 			return response.data
 		})
 	},
-	sendMessage(param) {
-		return axios.get(url.sendMessage+'?phone='+param.phone).then((response) => {
+	sendMessage(phone) {
+		return axios.get(url.sendMessage+phone).then((response) => {
+			return response.data
+		})
+	},
+	sendEmail(email) {
+		return axios.get(url.sendEmail+email).then((response) => {
 			return response.data
 		})
 	},
 	userNameIsExist(username) {
-		return axios.get(url.userNameIsExist+'?userName='+username).then((response) => {
+		return axios.get(url.userNameIsExist+username).then((response) => {
 			return response.data
 		})
 	},
 	nickNameIsExist(nickname) {
-		return axios.get(url.nickNameIsExist+'?nickName='+nickname).then((response) => {
+		return axios.get(url.nickNameIsExist+nickname).then((response) => {
+			return response.data
+		})
+	},
+	phoneIsExist(phone) {
+		return axios.get(url.phoneIsExist+phone).then((response) => {
+			return response.data
+		})
+	},
+	emailIsExist(email) {
+		return axios.get(url.emailIsExist+email).then((response) => {
 			return response.data
 		})
 	},
@@ -29,12 +45,20 @@ export const commonApi = {
 		})
 	},
 	attention(param) {
-		return axios.post(url.attention, param).then((response) => {
+		return axios.post(url.attention, param, {
+			headers: {
+				'Authorization': getAuthToken()
+			}
+		}).then((response) => {
 			return response.data
 		})
 	},
 	cancelAttention(param) {
-		return axios.post(url.cancelAttention, param).then((response) => {
+		return axios.post(url.cancelAttention, param, {
+			headers: {
+				'Authorization': getAuthToken()
+			}
+		}).then((response) => {
 			return response.data
 		})
 	},
@@ -44,7 +68,7 @@ export const commonApi = {
 		})
 	},
 	watch(videoId) {
-		return axios.get(url.watch+'?videoId='+videoId).then((response) => {
+		return axios.get(url.watch+videoId).then((response) => {
 			return response.data
 		})
 	}
@@ -103,7 +127,7 @@ export const videoApi = {
 		})
 	},
 	tag(videoId) {
-		return axios.get(url.tag+'?videoId='+videoId).then((response) => {
+		return axios.get(url.tag+videoId).then((response) => {
 			return response.data
 		})
 	},
@@ -113,22 +137,38 @@ export const videoApi = {
 		})
 	},
 	videoPraise(param) {
-		return axios.post(url.videoPraise, param).then((response) => {
+		return axios.post(url.videoPraise, param, {
+			headers: {
+				'Authorization': getAuthToken()
+			}
+		}).then((response) => {
 			return response.data
 		})
 	},
 	commentPraise(param) {
-		return axios.post(url.commentPraise, param).then((response) => {
+		return axios.post(url.commentPraise, param, {
+			headers: {
+				'Authorization': getAuthToken()
+			}
+		}).then((response) => {
 			return response.data
 		})
 	},
 	videoCollect(param) {
-		return axios.post(url.videoCollect, param).then((response) => {
+		return axios.post(url.videoCollect, param, {
+			headers: {
+				'Authorization': getAuthToken()
+			}
+		}).then((response) => {
 			return response.data
 		})
 	},
 	comment(param) {
-		return axios.post(url.comment, param).then((response) => {
+		return axios.post(url.comment, param,{
+			headers: {
+				'Authorization': getAuthToken()
+			}
+		}).then((response) => {
 			return response.data
 		})
 	},
@@ -141,27 +181,47 @@ export const videoApi = {
 
 export const centerApi = {
 	updateInfo(param) {
-		return axios.post(url.updateInfo, param).then((response) => {
+		return axios.post(url.updateInfo, param, {
+			headers: {
+				'Authorization': getAuthToken()
+			}
+		}).then((response) => {
 			return response.data
 		})
 	},
 	updatePassword(param) {
-		return axios.post(url.updatePassword, param).then((response) => {
+		return axios.post(url.updatePassword, param, {
+			headers: {
+				'Authorization': getAuthToken()
+			}
+		}).then((response) => {
 			return response.data
 		})
 	},
 	updateIcon(param) {
-		return axios.post(url.updateIcon, param).then((response) => {
+		return axios.post(url.updateIcon, param, {
+			headers: {
+				'Authorization': getAuthToken()
+			}
+		}).then((response) => {
 			return response.data
 		})
 	},
 	updateEmail(param) {
-		return axios.post(url.updateEmail, param).then((response) => {
+		return axios.post(url.updateEmail, param, {
+			headers: {
+				'Authorization': getAuthToken()
+			}
+		}).then((response) => {
 			return response.data
 		})
 	},
 	updatePhone(param) {
-		return axios.post(url.updatePhone, param).then((response) => {
+		return axios.post(url.updatePhone, param, {
+			headers: {
+				'Authorization': getAuthToken()
+			}
+		}).then((response) => {
 			return response.data
 		})
 	}
@@ -169,7 +229,7 @@ export const centerApi = {
 
 export const spaceApi = {
 	getInfo(userId) {
-		return axios.get(url.getInfo+'?userId='+userId).then((response) => {
+		return axios.get(url.getInfo+userId).then((response) => {
 			return response.data
 		})
 	},
@@ -189,7 +249,7 @@ export const spaceApi = {
 		})
 	},
 	videoNum(userId) {
-		return axios.get(url.videoNum+'?userId='+userId).then((response) => {
+		return axios.get(url.videoNum+userId).then((response) => {
 			return response.data
 		})
 	},
@@ -199,7 +259,7 @@ export const spaceApi = {
 		})
 	},
 	underReviewNum(userId) {
-		return axios.get(url.underReviewNum+'?userId='+userId).then((response) => {
+		return axios.get(url.underReviewNum+userId).then((response) => {
 			return response.data
 		})
 	},
@@ -209,7 +269,7 @@ export const spaceApi = {
 		})
 	},
 	deletedNum(userId) {
-		return axios.get(url.deletedNum+'?userId='+userId).then((response) => {
+		return axios.get(url.deletedNum+userId).then((response) => {
 			return response.data
 		})
 	},
@@ -219,17 +279,21 @@ export const spaceApi = {
 		})
 	},
 	favTotal(userId) {
-		return axios.get(url.favTotal+'?userId='+userId).then((response) => {
+		return axios.get(url.favTotal+userId).then((response) => {
 			return response.data
 		})
 	},
 	favNum(userId) {
-		return axios.get(url.favNum+'?userId='+userId).then((response) => {
+		return axios.get(url.favNum+userId).then((response) => {
 			return response.data
 		})
 	},
 	cancelCollect(param) {
-		return axios.post(url.cancelCollect, param).then((response) => {
+		return axios.post(url.cancelCollect, param, {
+			headers: {
+				'Authorization': getAuthToken()
+			}
+		}).then((response) => {
 			return response.data
 		})
 	},
@@ -249,7 +313,7 @@ export const spaceApi = {
 		})
 	},
 	userTags(userId) {
-		return axios.get(url.userTags+'?userId='+userId).then((response) => {
+		return axios.get(url.userTags+userId).then((response) => {
 			return response.data
 		})
 	},
@@ -259,12 +323,20 @@ export const spaceApi = {
 		})
 	},
 	updateToutu(param) {
-		return axios.post(url.updateToutu, param).then((response) => {
+		return axios.post(url.updateToutu, param, {
+			headers: {
+				'Authorization': getAuthToken()
+			}
+		}).then((response) => {
 			return response.data
 		})
 	},
 	updateState(param) {
-		return axios.post(url.updateState, param).then((response) => {
+		return axios.post(url.updateState, param, {
+			headers: {
+				'Authorization': getAuthToken()
+			}
+		}).then((response) => {
 			return response.data
 		})
 	},
@@ -297,7 +369,11 @@ export const uploadApi = {
 		})
 	},
 	changeState(param) {
-		return axios.get(url.changeState+'?commentId='+param.commentId+'&state='+param.state).then((response) => {
+		return axios.get(url.changeState+param.commentId+'/'+param.state, {
+			headers: {
+				'Authorization': getAuthToken()
+			}
+		}).then((response) => {
 			return response.data
 		})
 	},
@@ -349,7 +425,7 @@ export const messageApi = {
 //获取轮播图
 export const bannerApi = {
 	banner(top) {
-		return axios.get(url.banner+'?top='+top).then((response) => {
+		return axios.get(url.banner+top).then((response) => {
 			return response.data
 		})
 	},
@@ -363,7 +439,7 @@ export const bannerApi = {
 // 排行榜
 export const rankApi = {
 	ranking(param) {
-		return axios.get(url.ranking+'?top='+param.top+'&time='+param.time).then((response) => {
+		return axios.get(url.ranking+param.top+'/'+param.time).then((response) => {
 			return response.data
 		})
 	}
@@ -399,7 +475,7 @@ export const liveApi = {
 // 具体内容
 export const contentApi = {
 	content() {
-		return axios.get(url.content+'?pageSize=8').then((response) => {
+		return axios.get(url.content).then((response) => {
 			return response.data
 		})
 	},
@@ -409,7 +485,7 @@ export const contentApi = {
 		})
 	},
 	rowsByPartition(param) {
-		return axios.get(url.updateRows+'?partitionId='+param.partitionId+'&pageSize=8').then((response) => {
+		return axios.get(url.updateRows+param.partitionId+'/8').then((response) => {
 			return response.data
 		})
 	}
@@ -418,7 +494,7 @@ export const contentApi = {
 // 具体内容的三日排行榜信息
 export const contentrankApi = {
 	contentrank(param) {
-		return axios.get(url.contentrank+'?top='+param.top+'&partitionId='+param.partitionId).then((response) => {
+		return axios.get(url.contentrank+param.top+'/'+param.partitionId).then((response) => {
 			return response.data
 		})
 	}

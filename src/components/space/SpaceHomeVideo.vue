@@ -3,6 +3,7 @@
         <h3 class="section-title">
             <a :href="'/space/'+userInfo.iD+'/video/index'" class="t">我的视频</a>
             <span class="count">{{videoNum}}</span>
+            <a :href="'/space/'+userInfo.iD+'/video/index'" class="more">更多</a>
             <div :class="video.length !== 0 ? 'sec-empty-hint-host' : 'sec-empty-hint'">
                 还没有上传过视频哦~
                 <a href="/upload/uploadVideo" target="_blank">
@@ -114,6 +115,14 @@ a {
 }
 #page-index .col-1 .section .more {
     background-position: -310px -405px;
+}
+#page-index .col-1 .section .more:hover {
+    background-position: -438px -405px;
+}
+.section .more:hover {
+    background-position: -438px -405px;
+    border-color: #00a1d6;
+    color: #00a1d6;
 }
 .section .more {
     background-position: -310px -405px;

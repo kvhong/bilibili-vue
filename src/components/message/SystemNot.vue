@@ -52,16 +52,13 @@ export default {
             })
         },
         handleChange(val) {
-            console.log(val);
         },
         handleSizeChange(val) {
-          this.pageNum = val
-          console.log(this.pageNum)
-          this.getData()
+            this.pageNum = val
+            this.getData()
         },
         handleCurrentChange(val) {
             this.pageNum = val
-            console.log(this.pageNum)
             this.getData()
         }
     },

@@ -48,12 +48,10 @@ export default {
         },
         handleSizeChange(val) {
             this.pageNum = val
-            console.log(this.pageNum)
             this.getData()
         },
         handleCurrentChange(val) {
             this.pageNum = val
-            console.log(this.pageNum)
             this.getData()
         }
     },

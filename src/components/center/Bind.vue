@@ -21,7 +21,7 @@
                             </el-form-item>
                             <el-form-item prop="phoneCode">
                                 <input type="text" autocomplete="off" placeholder="请输入验证码" class="el-input__inner_1" v-model.trim="phoneFormOne.phoneCode">
-                                <el-button plain style="float: right;width: 88px;padding-left: 9px;margin-top: 2px" @click="getPhoneCode">获取验证码</el-button>
+                                <el-button plain style="float: right;width: 88px;padding-left: 9px;margin-top: 2px" @click="getPhoneCode('one')">获取验证码</el-button>
                             </el-form-item>
                             <el-form-item>
                                 <el-button type="primary" class="next" @click="next('phoneFormOne', 'one')">下一步</el-button>
@@ -34,7 +34,7 @@
                             </el-form-item>
                             <el-form-item prop="emailCode">
                                 <input type="text" autocomplete="off" placeholder="请输入验证码" class="el-input__inner_1" v-model.trim="emailFormOne.emailCode">
-                                <el-button plain style="float: right;width: 88px;padding-left: 9px;margin-top: 2px" @click="getEmailCode">获取验证码</el-button>
+                                <el-button plain style="float: right;width: 88px;padding-left: 9px;margin-top: 2px" @click="getEmailCode('one')">获取验证码</el-button>
                             </el-form-item>
                             <el-form-item>
                                 <el-button type="primary" class="next" @click="next('emailFormOne', 'one')">下一步</el-button>
@@ -42,11 +42,11 @@
                         </el-form>
                         <el-form ref="phoneFormTwo" :model="phoneFormTwo" :rules="phoneRulesTwo" v-show="active === 1 && bind === 'phone'">
                             <el-form-item prop="phone">
-                                <input type="text" disabled="disabled" autocomplete="off" placeholder="请输入手机号" class="el-input__inner_2" v-model.number="phoneFormTwo.phone">
+                                <input type="text" autocomplete="off" placeholder="请输入手机号" class="el-input__inner_2" v-model.number="phoneFormTwo.phone">
                             </el-form-item>
                             <el-form-item prop="phoneCode">
                                 <input type="text" autocomplete="off" placeholder="请输入验证码" class="el-input__inner_1" v-model.trim="phoneFormTwo.phoneCode">
-                                <el-button plain style="float: right;width: 88px;padding-left: 9px;margin-top: 2px" @click="getPhoneCode">获取验证码</el-button>
+                                <el-button plain style="float: right;width: 88px;padding-left: 9px;margin-top: 2px" @click="getPhoneCode('two')">获取验证码</el-button>
                             </el-form-item>
                             <el-form-item>
                                 <el-button type="primary" class="next" @click="next('phoneFormTwo', 'two')">下一步</el-button>
@@ -54,11 +54,11 @@
                         </el-form>
                         <el-form ref="emailFormTwo" :model="emailFormTwo" :rules="emailRulesTwo" v-show="active === 1 && bind === 'email'">
                             <el-form-item prop="email">
-                                <input type="text" disabled="disabled" autocomplete="off" placeholder="请输入邮箱地址" class="el-input__inner_2" v-model.trim="emailFormTwo.email">
+                                <input type="text" autocomplete="off" placeholder="请输入邮箱地址" class="el-input__inner_2" v-model.trim="emailFormTwo.email">
                             </el-form-item>
                             <el-form-item prop="emailCode">
                                 <input type="text" autocomplete="off" placeholder="请输入验证码" class="el-input__inner_1" v-model.trim="emailFormTwo.emailCode">
-                                <el-button plain style="float: right;width: 88px;padding-left: 9px;margin-top: 2px" @click="getEmailCode">获取验证码</el-button>
+                                <el-button plain style="float: right;width: 88px;padding-left: 9px;margin-top: 2px" @click="getEmailCode('two')">获取验证码</el-button>
                             </el-form-item>
                             <el-form-item>
                                 <el-button type="primary" class="next" @click="next('emailFormTwo', 'two')">下一步</el-button>
@@ -67,15 +67,15 @@
                         <el-form ref="passwordForm" :model="passwordForm" :rules="passwordRules" v-show="active === 1 && bind === 'password'">
                             <el-form-item prop="nowCode">
                                 <div class="el-input-group__prepend">当前密码</div>
-                                <input type="text" disabled="disabled" autocomplete="off" placeholder="请输入内容" class="el-input__inner" v-model.trim="passwordForm.nowCode">
+                                <input type="text" autocomplete="off" placeholder="请输入内容" class="el-input__inner" v-model.trim="passwordForm.nowCode">
                             </el-form-item>
                             <el-form-item prop="newCode">
                                 <div class="el-input-group__prepend">新的密码</div>
-                                <input type="text" disabled="disabled" autocomplete="off" placeholder="请输入内容" class="el-input__inner" v-model.trim="passwordForm.newCode">
+                                <input type="text" autocomplete="off" placeholder="请输入内容" class="el-input__inner" v-model.trim="passwordForm.newCode">
                             </el-form-item>
                             <el-form-item prop="confirmCode">
                                 <div class="el-input-group__prepend">确认密码</div>
-                                <input type="text" disabled="disabled" autocomplete="off" placeholder="请输入内容" class="el-input__inner" v-model.trim="passwordForm.confirmCode">
+                                <input type="text" autocomplete="off" placeholder="请输入内容" class="el-input__inner" v-model.trim="passwordForm.confirmCode">
                             </el-form-item>
                             <el-form-item>
                                 <el-button type="primary" class="next" @click="next('passwordForm', 'two')">下一步</el-button>
@@ -97,6 +97,28 @@ import { commonApi, centerApi } from 'api'
 import { Message } from 'element-ui'
 export default {
     data() {
+        const checkPhone = (rule, value, callback) => {
+            if (this.reg.test(value)) {
+                commonApi.phoneIsExist(value).then((response) => {
+                    if (response) {
+                        return callback(new Error('手机号已存在'))
+                    } else {
+                        callback()
+                    }
+                })
+            } else {
+                return callback(new Error('请输入正确的手机号'))
+            }
+        }
+        const checkEmail = (rule, value, callback) => {
+            commonApi.emailIsExist(value).then((response) => {
+                if (response) {
+                    return callback(new Error('邮箱已存在'))
+                } else {
+                    callback()
+                }
+            })
+        }
         const checkPhoneCode = (rule, value, callback) => {
             if (this.PCode === '') {
                 return callback(new Error('请获取短信验证码'))
@@ -110,12 +132,12 @@ export default {
         }
         const checkEmailCode = (rule, value, callback) => {
             if (this.ECode === '') {
-                return callback(new Error('请获取短信验证码'))
+                return callback(new Error('请获取邮件验证码'))
             } else {
                 if (Number(value) === this.ECode) {
                     callback()
                 } else {
-                    return callback(new Error('短信验证码错误'))
+                    return callback(new Error('邮件验证码错误'))
                 }
             }
         }
@@ -183,7 +205,8 @@ export default {
             },
             phoneRulesTwo: {
                 phone: [
-                    { required: true, message: '手机号不可为空', trigger: 'blur' }
+                    { required: true, message: '手机号不可为空', trigger: 'blur' },
+                    { validator: checkPhone, trigger: 'blur' }
                 ],
                 phoneCode: [
                     { required: true, message: '验证码不可为空', trigger: 'blur' },
@@ -192,7 +215,8 @@ export default {
             },
             emailRulesTwo: {
                 email: [
-                    { required: true, message: '邮箱不可为空', trigger: 'blur' }
+                    { required: true, message: '邮箱不可为空', trigger: 'blur' },
+                    { validator: checkEmail, trigger: 'blur' }
                 ],
                 emailCode: [
                     { required: true, message: '验证码不可为空', trigger: 'blur' },
@@ -266,14 +290,45 @@ export default {
             })
             
         },
-        getPhoneCode() {
-            commonApi.sendMessage({ phone: this.phoneForm.realPhone }).then((response) => {
+        getPhoneCode(val) {
+            var phone
+            if (val === 'one') {
+                if (this.phoneFormOne.realPhone === '') {
+                    Message.error('手机号为空')
+                    return
+                }
+                phone = this.phoneFormOne.realPhone
+            } else {
+                if (this.phoneFormTwo.phone === '') {
+                    Message.error('手机号为空')
+                    return
+                }
+                phone = this.phoneFormTwo.phone
+            }
+            commonApi.sendMessage(phone).then((response) => {
                 Message.success('短信已经发送')
-                this.phoneCode = response
+                this.PCode = response
             })
         },
-        getEmailCode() {
-
+        getEmailCode(val) {
+            var email
+            if (val === 'one') {
+                if (this.emailFormOne.realEmail === '') {
+                    Message.error('邮箱为空')
+                    return
+                }
+                email = this.emailFormOne.realEmail
+            } else {
+                if (this.emailFormTwo.email === '') {
+                    Message.error('邮箱为空')
+                    return
+                }
+                email = this.emailFormTwo.email
+            }
+            commonApi.sendEmail(email).then((response) => {
+                Message.success('邮件已经发送')
+                this.ECode = response
+            })
         }
     },
     watch: {

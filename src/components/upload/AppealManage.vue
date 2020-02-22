@@ -57,16 +57,13 @@ export default {
     },
     methods: {
       handleClick(tab, event) {
-        console.log(tab.name);
       },
       handleSizeChange(val) {
           this.pageNum = val
-          console.log(this.pageNum)
           this.getData()
       },
       handleCurrentChange(val) {
           this.pageNum = val
-          console.log(this.pageNum)
           this.getData()
       }
     }

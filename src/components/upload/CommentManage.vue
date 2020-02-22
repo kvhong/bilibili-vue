@@ -78,11 +78,9 @@ export default {
         })
       },
       handleSelect(key, keyPath) {
-        console.log(key, keyPath);
       },
       handleSizeChange(val) {
           this.pageNum = val
-          console.log(this.pageNum)
           if (this.keyWord !== '') {
             this.searchComment()
           } else {
@@ -91,7 +89,6 @@ export default {
       },
       handleCurrentChange(val) {
           this.pageNum = val
-          console.log(this.pageNum)
           if (this.keyWord !== '') {
             this.searchComment()
           } else {

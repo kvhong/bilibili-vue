@@ -3,7 +3,7 @@
         <div class="card" :class="list.length <= 0 ? 'empty' : ''">
             <ul>
                 <li v-for="item in list" :key="item.id">
-                    <a :href="'/video/'+item.video_id+'#'+item.id" target="_blank" class="item">
+                    <a :href="'/video/'+item.video_id+'#'+item.id" target="_blank" class="item" @click="watch">
                         <div class="user-face">
                             <a :href="'/ospace/index?id='+item.author_id" target="_blank">
                                 <img :src="qiniuAddress+item.avatar" width="86" height="86" :alt="item.author" :title="item.author">
@@ -27,8 +27,8 @@
                             </div>
                         </div>
                         <div class="video-info">
-                            <a :href="'/video/'+item.video_id+'#playerWrap'" target="_blank">
-                                <img :src="qiniuAddress+item.picture" :alt="item.video_title">
+                            <a :href="'/video/'+item.video_id+'#playerWrap'" target="_blank" @click="watch">
+                                <img :src="item.picture === '' ? qiniuAddress+item.video_url+'?vframe/png/offset/2' : qiniuAddress+item.picture" :alt="item.video_title">
                             </a>
                             <div class="title">{{item.video_title}}</div>
                         </div>
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { messageApi } from 'api'
+import { messageApi, commonApi } from 'api'
 export default {
     data() {
         return {
@@ -74,15 +74,16 @@ export default {
             window.open('/video/'+item.video_id+'#comment','_blank')
         },
         handleSizeChange(val) {
-          this.pageNum = val
-          console.log(this.pageNum)
-          this.getData()
+            this.pageNum = val
+            this.getData()
         },
         handleCurrentChange(val) {
             this.pageNum = val
-            console.log(this.pageNum)
             this.getData()
-        }
+        },
+        watch() {
+			commonApi.watch(this.item.video_id)
+		}
     },
     mounted() {
         this.getData()

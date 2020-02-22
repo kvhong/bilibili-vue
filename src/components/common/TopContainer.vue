@@ -174,7 +174,7 @@ export default {
   inject: ['reload'],
   data() {
     return {
-      client: Stomp.client('ws://localhost:15674/ws'),
+      client: Stomp.client('ws://118.31.102.1:15674/ws'),
       Suc: false,
       successContent: '',
       Err: false,
@@ -229,7 +229,6 @@ export default {
     },
     logout() {
       loginApi.logout().then((response) => {
-        console.log(response)
         if (response === 200) {
           this.userInfo = ''
           this.successContent = '注销成功'
@@ -265,7 +264,7 @@ export default {
       this.client.subscribe(topic, this.responseCallback, this.onFailed);
     },
     onFailed: function(frame) {
-      console.log("MQ Failed: " + frame);
+      
     },
     responseCallback: function(frame) {
       //接收消息处理

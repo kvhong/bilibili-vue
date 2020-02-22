@@ -7,7 +7,7 @@ module.exports = {
     index: path.resolve(__dirname, '../dist/index.html'),
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: './',
+    assetsPublicPath: '/',
     productionSourceMap: true,
     // Gzip off by default as many popular static hosts such as
     // Surge or Netlify already gzip all static assets for you.
@@ -22,46 +22,46 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/user-api': {
-        target: "http://118.31.102.1:8100/userInfo-server",
+      '/userInfo-server': {
+        target: "https://118.31.102.1:8100/userInfo-server",
         changeOrigin: true,
         pathRewrite: {
-          '^/user-api': ''
+          '^/userInfo-server': ''
         }
       },
-      '/home-api': {
-        target: "http://118.31.102.1:8100/home-server",
+      '/home-server': {
+        target: "https://118.31.102.1:8100/home-server",
         changeOrigin: true,
         pathRewrite: {
-          '^/home-api': ''
+          '^/home-server': ''
         }
       },
-      '/video-api': {
-        target: "http://118.31.102.1:8100/videoInfo-server",
+      '/videoInfo-server': {
+        target: "https://118.31.102.1:8100/videoInfo-server",
         changeOrigin: true,
         pathRewrite: {
-          '^/video-api': ''
+          '^/videoInfo-server': ''
         }
       },
-      '/personalVideo-api': {
-        target: "http://118.31.102.1:8100/personalVideo-server",
+      '/personalVideo-server': {
+        target: "https://118.31.102.1:8100/personalVideo-server",
         changeOrigin: true,
         pathRewrite: {
-          '^/personalVideo-api': ''
+          '^/personalVideo-server': ''
         }
       },
-      '/label-api': {
-        target: "http://118.31.102.1:8100/label-server",
+      '/label-server': {
+        target: "https://118.31.102.1:8100/label-server",
         changeOrigin: true,
         pathRewrite: {
-          '^/label-api': ''
+          '^/label-server': ''
         }
       },
-      '/collect-api': {
-        target: "http://118.31.102.1:8100/collect-server",
+      '/collect-server': {
+        target: "https://118.31.102.1:8100/collect-server",
         changeOrigin: true,
         pathRewrite: {
-          '^/collect-api': ''
+          '^/collect-server': ''
         }
       }
     },

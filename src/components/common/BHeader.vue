@@ -3,7 +3,7 @@
   	<div class="header-layer"></div>
   	<a class="header-link" target="_blank" href="/" data-loc-id="142" @mouseenter="isShow = !isShow" @mouseout="isShow = !isShow"></a>
   	<div class="h-center" @mouseenter="isShow = !isShow" @mouseout="isShow = !isShow">
-  		<a href="/" class="logo" style="background-image: url('//i0.hdslb.com/bfs/archive/bb2aa0d954bf59d4ee555a8a603fe83888463b6b.png');"></a>
+  		<a href="/" class="logo"></a>
   		<div class="banner-title" v-show="isShow">哔哩哔哩 (゜-゜)つロ 干杯~</div>
       <search class="msearch"></search>
   	</div>
@@ -58,7 +58,7 @@ export default {
     		height 105px
     		left 24px
     		top 55px
-    		background transparent no-repeat left center
+    		background url('../../assets/images/logo.png') transparent no-repeat left center
     		z-index 100
     	.banner-title
     		position absolute

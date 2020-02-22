@@ -37,7 +37,7 @@
 <script>
 import PartitionItem from 'components/space/PartitionItem'
 import OCollectList from 'components/ospace/OCollectList'
-import { spaceApi } from 'api'
+import { spaceApi,commonApi } from 'api'
 export default {
     data() {
         return {
@@ -64,6 +64,7 @@ export default {
             this.userId = this.$route.query.id
             this.getTotal()
             this.getVideo(this.active)
+            this.getPartition()
         },
         getData(val) {
             this.pageNum = val.pageNum
@@ -81,6 +82,11 @@ export default {
         click(val) {
             this.active = val
             this.getVideo(val)
+        },
+        getPartition() {
+            commonApi.getPartition().then((response) => {
+                this.parList = response
+            })
         },
         getVideo(val) {
             switch (val) {
@@ -132,6 +138,7 @@ export default {
             this.totalData.forEach(element => {
                 if (this.filterList.indexOf(element.partition_name) !== -1) {
                     this.videoList.push(element)
+                    console.log(this.videoList)
                 }
             });
         }
