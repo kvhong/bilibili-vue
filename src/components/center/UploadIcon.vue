@@ -90,8 +90,8 @@ export default {
                 var uptoken
                 var policy = {}
                 var bucketName = 'clideo'
-                var AK = 'qHZmqay_XNi5EezMzE6b4VpcAp4x2RG1gm-6xmBK'
-                var SK = '0Y2B5IgtX1BQQYnxV-TO3gnJsx-668-KM1yHRbiB'
+                var AK = 'AK'
+                var SK = 'SK'
                 var deadline = Math.round(new Date().getTime() / 1000) + 3600
                 policy.scope = bucketName
                 policy.deadline = deadline
